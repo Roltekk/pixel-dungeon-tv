@@ -8,8 +8,8 @@ android {
         applicationId "com.watabou.pixeldungeon"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 70
-        versionName "1.7.5a"
+        versionCode 74
+        versionName "1.9.1"
     }
 
     buildTypes {
