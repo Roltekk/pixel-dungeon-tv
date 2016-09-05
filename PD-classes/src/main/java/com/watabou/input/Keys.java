@@ -30,6 +30,23 @@ public class Keys {
 	public static final int VOLUME_UP	= KeyEvent.KEYCODE_VOLUME_UP;
 	public static final int VOLUME_DOWN	= KeyEvent.KEYCODE_VOLUME_DOWN;
 
+	// game controller buttons
+	public static final int DPAD_UP = KeyEvent.KEYCODE_DPAD_UP;
+	public static final int DPAD_DOWN = KeyEvent.KEYCODE_DPAD_DOWN;
+	public static final int DPAD_LEFT = KeyEvent.KEYCODE_DPAD_LEFT;
+	public static final int DPAD_RIGHT = KeyEvent.KEYCODE_DPAD_RIGHT;
+	public static final int DPAD_CENTER = KeyEvent.KEYCODE_DPAD_CENTER;
+	public static final int BUTTON_A = KeyEvent.KEYCODE_BUTTON_A;
+	public static final int BUTTON_B = KeyEvent.KEYCODE_BUTTON_B;
+	public static final int BUTTON_X = KeyEvent.KEYCODE_BUTTON_X;
+	public static final int BUTTON_Y = KeyEvent.KEYCODE_BUTTON_Y;
+	public static final int BUTTON_L1 = KeyEvent.KEYCODE_BUTTON_L1;
+	public static final int BUTTON_R1 = KeyEvent.KEYCODE_BUTTON_R1;
+	public static final int BUTTON_L2 = KeyEvent.KEYCODE_BUTTON_L2;
+	public static final int BUTTON_R2 = KeyEvent.KEYCODE_BUTTON_R2;
+	public static final int BUTTON_THUMBL = KeyEvent.KEYCODE_BUTTON_THUMBL;
+	public static final int BUTTON_THUMBR = KeyEvent.KEYCODE_BUTTON_THUMBR;
+
 	public static Signal<Key> event = new Signal<Key>( true );
 	
 	public static void processTouchEvents( ArrayList<KeyEvent> events ) {

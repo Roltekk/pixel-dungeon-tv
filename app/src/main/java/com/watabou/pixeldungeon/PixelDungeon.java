@@ -20,7 +20,9 @@ package com.watabou.pixeldungeon;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.annotation.SuppressLint;
+import android.app.UiModeManager;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -127,13 +129,17 @@ public class PixelDungeon extends Game {
 		super.onCreate( savedInstanceState );
 		
 		updateImmersiveMode();
-		
-		DisplayMetrics metrics = new DisplayMetrics();
-		instance.getWindowManager().getDefaultDisplay().getMetrics( metrics );
-		boolean landscape = metrics.widthPixels > metrics.heightPixels;
-		
-		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_LANDSCAPE, false ) != landscape) {
-			landscape( !landscape );
+
+		UiModeManager uiModeManager = (UiModeManager) getSystemService(UI_MODE_SERVICE);
+		if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+			landscape(true);
+		} else {
+			DisplayMetrics metrics = new DisplayMetrics();
+			instance.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			boolean landscape = metrics.widthPixels > metrics.heightPixels;
+			if (Preferences.INSTANCE.getBoolean(Preferences.KEY_LANDSCAPE, false) != landscape) {
+				landscape(!landscape);
+			}
 		}
 		
 		Music.INSTANCE.enable( music() );
@@ -143,7 +149,6 @@ public class PixelDungeon extends Game {
 			Assets.SND_CLICK, 
 			Assets.SND_BADGE, 
 			Assets.SND_GOLD,
-			
 			Assets.SND_DESCEND,
 			Assets.SND_STEP,
 			Assets.SND_WATER,

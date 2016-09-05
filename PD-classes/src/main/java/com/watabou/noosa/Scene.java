@@ -31,6 +31,7 @@ public class Scene extends Group {
 				if (Game.instance != null && key.pressed) {
 					switch (key.code) {
 					case Keys.BACK:
+					case Keys.BUTTON_B:
 						onBackPressed();
 						break;
 					case Keys.MENU:

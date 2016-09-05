@@ -40,13 +40,14 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 
 public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTouchListener {
-
+	private static final String TAG = "Game";
 	public static Game instance;
 	
 	// Actual size of the screen
@@ -149,10 +150,11 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 		Music.INSTANCE.mute();
 		Sample.INSTANCE.reset();
 	}
-
+	
 	@SuppressLint({ "Recycle", "ClickableViewAccessibility" })
 	@Override
 	public boolean onTouch( View view, MotionEvent event ) {
+		logTouch( event );
 		synchronized (motionEvents) {
 			motionEvents.add( MotionEvent.obtain( event ) );
 		}
@@ -161,14 +163,13 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	
 	@Override
 	public boolean onKeyDown( int keyCode, KeyEvent event ) {
-		
-		if (keyCode == Keys.VOLUME_DOWN || 
+		logKeys( "onKeyDown", keyCode );
+		if (keyCode == Keys.VOLUME_DOWN ||
 			keyCode == Keys.VOLUME_UP) {
-			
 			return false;
 		}
 		
-		synchronized (motionEvents) {
+		synchronized (keysEvents) {
 			keysEvents.add( event );
 		}
 		return true;
@@ -176,18 +177,25 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	
 	@Override
 	public boolean onKeyUp( int keyCode, KeyEvent event ) {
-		
-		if (keyCode == Keys.VOLUME_DOWN || 
+		logKeys( "onKeyUp", keyCode );
+		if (keyCode == Keys.VOLUME_DOWN ||
 			keyCode == Keys.VOLUME_UP) {
 			
 			return false;
 		}
 		
-		synchronized (motionEvents) {
+		synchronized (keysEvents) {
 			keysEvents.add( event );
 		}
 		return true;
 	}
+	
+	// TODO: use for analog controls
+	//	@Override
+	//	public boolean onGenericMotionEvent( MotionEvent event ) {
+	//		Log.d( TAG, "onGenericMotionEvent - MotionEvent = " + event.toString() );
+	//		return super.onGenericMotionEvent( event );
+	//	}
 	
 	@Override
 	public void onDrawFrame( GL10 gl ) {
@@ -202,13 +210,13 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 		now = rightNow;
 		
 		step();
-
+		
 		NoosaScript.get().resetCamera();
 		GLES20.glScissor( 0, 0, width, height );
 		GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT );
 		draw();
 	}
-
+	
 	@Override
 	public void onSurfaceChanged( GL10 gl, int width, int height ) {
 		
@@ -216,9 +224,9 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 		
 		Game.width = width;
 		Game.height = height;
-
+		
 	}
-
+	
 	@Override
 	public void onSurfaceCreated( GL10 gl, EGLConfig config ) {
 		GLES20.glEnable( GL10.GL_BLEND );
@@ -273,7 +281,7 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	}
 	
 	protected void switchScene() {
-
+		
 		Camera.reset();
 		
 		if (scene != null) {
@@ -298,11 +306,79 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 			keysEvents.clear();
 		}
 		
-		scene.update();		
+		scene.update();
 		Camera.updateAll();
 	}
 	
 	public static void vibrate( int milliseconds ) {
 		((Vibrator)instance.getSystemService( VIBRATOR_SERVICE )).vibrate( milliseconds );
+	}
+	
+	private void logKeys( String action, int keyCode ) {
+		// debug logging
+		switch (keyCode) {
+			case Keys.BACK:
+				Log.d( TAG, action + " Keys.BACK" );
+				break;
+			case Keys.MENU:
+				Log.d( TAG, action + " Keys.MENU" );
+				break;
+			case Keys.VOLUME_UP:
+				Log.d( TAG, action + " Keys.VOLUME_UP" );
+				break;
+			case Keys.VOLUME_DOWN:
+				Log.d( TAG, action + " Keys.VOLUME_DOWN" );
+				break;
+			case Keys.DPAD_UP:
+				Log.d( TAG, action + " Keys.DPAD_UP" );
+				break;
+			case Keys.DPAD_DOWN:
+				Log.d( TAG, action + " Keys.DPAD_DOWN" );
+				break;
+			case Keys.DPAD_LEFT:
+				Log.d( TAG, action + " Keys.DPAD_LEFT" );
+				break;
+			case Keys.DPAD_RIGHT:
+				Log.d( TAG, action + " Keys.DPAD_RIGHT" );
+				break;
+			case Keys.DPAD_CENTER:
+				Log.d( TAG, action + " Keys.DPAD_CENTER" );
+				break;
+			case Keys.BUTTON_A:
+				Log.d( TAG, action + " Keys.BUTTON_A" );
+				break;
+			case Keys.BUTTON_B:
+				Log.d( TAG, action + " Keys.BUTTON_B" );
+				break;
+			case Keys.BUTTON_X:
+				Log.d( TAG, action + " Keys.BUTTON_X" );
+				break;
+			case Keys.BUTTON_Y:
+				Log.d( TAG, action + " Keys.BUTTON_Y" );
+				break;
+			case Keys.BUTTON_L1:
+				Log.d( TAG, action + " Keys.BUTTON_L1" );
+				break;
+			case Keys.BUTTON_R1:
+				Log.d( TAG, action + " Keys.BUTTON_R1" );
+				break;
+			case Keys.BUTTON_L2:
+				Log.d( TAG, action + " Keys.BUTTON_L2" );
+				break;
+			case Keys.BUTTON_R2:
+				Log.d( TAG, action + " Keys.BUTTON_R2" );
+				break;
+			case Keys.BUTTON_THUMBL:
+				Log.d( TAG, action + " Keys.BUTTON_THUMBL" );
+				break;
+			case Keys.BUTTON_THUMBR:
+				Log.d( TAG, action + " Keys.BUTTON_THUMBR" );
+				break;
+		}
+	}
+	
+	private void logTouch( MotionEvent event ) {
+		Log.d( TAG, "onTouch " + event.toString() );
+		
 	}
 }

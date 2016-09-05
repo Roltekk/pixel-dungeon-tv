@@ -135,6 +135,7 @@ public class Window extends Group implements Signal.Listener<Key> {
 		if (key.pressed) {
 			switch (key.code) {
 			case Keys.BACK:
+			case Keys.BUTTON_B:
 				onBackPressed();			
 				break;
 			case Keys.MENU:
