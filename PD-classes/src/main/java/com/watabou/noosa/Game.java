@@ -224,7 +224,13 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 		
 		Game.width = width;
 		Game.height = height;
-		
+
+		Scene sc = scene();
+		if (sc != null) {
+			TextureCache.reload();
+			Camera.reset();
+			switchScene( sc.getClass() );
+		}
 	}
 	
 	@Override

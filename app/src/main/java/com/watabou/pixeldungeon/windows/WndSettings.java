@@ -44,9 +44,6 @@ public class WndSettings extends Window {
 	
 	private static final String TXT_QUICKSLOT	= "Second quickslot";
 	
-	private static final String TXT_SWITCH_PORT	= "Switch to portrait";
-	private static final String TXT_SWITCH_LAND	= "Switch to landscape";
-	
 	private static final int WIDTH		= 112;
 	private static final int BTN_HEIGHT	= 20;
 	private static final int GAP 		= 2;
@@ -164,18 +161,7 @@ public class WndSettings extends Window {
 			resize( WIDTH, (int)btnQuickslot.bottom() );
 			
 		} else {
-			
-			RedButton btnOrientation = new RedButton( orientationText() ) {
-				@Override
-				protected void onClick() {
-					PixelDungeon.landscape( !PixelDungeon.landscape() );
-				}
-			};
-			btnOrientation.setRect( 0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT );
-			add( btnOrientation );
-			
-			resize( WIDTH, (int)btnOrientation.bottom() );
-			
+			resize( WIDTH, (int)btnSound.bottom() );
 		}
 	}
 	
@@ -192,8 +178,5 @@ public class WndSettings extends Window {
 		btnZoomIn.enable( zoom < PixelScene.maxZoom );
 		btnZoomOut.enable( zoom > PixelScene.minZoom );
 	}
-	
-	private String orientationText() {
-		return PixelDungeon.landscape() ? TXT_SWITCH_PORT : TXT_SWITCH_LAND;
-	}
+
 }

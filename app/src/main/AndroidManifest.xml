@@ -37,8 +37,9 @@
 		<activity
 			android:name=".PixelDungeon"
 			android:banner="@drawable/banner"
-			android:configChanges="keyboard|keyboardHidden|navigation"
-			android:label="@string/app_name">
+			android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize"
+			android:label="@string/app_name"
+			android:screenOrientation="fullSensor">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />--> <!--comment out to use right stick mouse control-->
