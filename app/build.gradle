@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        applicationId "com.watabou.pixeldungeon"
+        applicationId "com.roltekk.pixeldungeon.tv"
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 74
