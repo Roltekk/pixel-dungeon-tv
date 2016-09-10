@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.roltekk.util.Debug;
 import com.watabou.glscripts.Script;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.input.Keys;
@@ -284,6 +285,7 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	
 	protected void draw() {
 		scene.draw();
+		if (Debug.DEBUG_INFO) { Debug.draw(); }
 	}
 	
 	protected void switchScene() {
@@ -308,11 +310,13 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 			motionEvents.clear();
 		}
 		synchronized (keysEvents) {
-			Keys.processTouchEvents( keysEvents );
+			Keys.processKeyEvents( keysEvents );
 			keysEvents.clear();
 		}
 		
 		scene.update();
+		if (Debug.DEBUG_INFO) { Debug.update(); }
+
 		Camera.updateAll();
 	}
 	
@@ -385,6 +389,5 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	
 	private void logTouch( MotionEvent event ) {
 		Log.d( TAG, "onTouch " + event.toString() );
-		
 	}
 }

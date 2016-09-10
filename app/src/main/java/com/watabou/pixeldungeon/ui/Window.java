@@ -18,6 +18,11 @@
 package com.watabou.pixeldungeon.ui;
 
 
+import android.util.Log;
+
+import com.roltekk.util.Debug;
+import com.roltekk.util.DebugUI;
+import com.roltekk.util.HotAreaUI;
 import com.watabou.input.Keys;
 import com.watabou.input.Keys.Key;
 import com.watabou.input.Touchscreen.Touch;
@@ -32,7 +37,7 @@ import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.utils.Signal;
 
 public class Window extends Group implements Signal.Listener<Key> {
-
+	private static final String TAG = "Window";
 	protected int width;
 	protected int height;
 	
@@ -64,9 +69,11 @@ public class Window extends Group implements Signal.Listener<Key> {
 				}
 			}
 		};
-		blocker.camera = PixelScene.uiCamera;
+		blocker.debug_outline.camera = blocker.camera = PixelScene.uiCamera;
 		add( blocker );
-		
+		add( blocker.debug_outline );
+		blocker.resizeDebugOutline();
+
 		this.chrome = chrome;
 		
 		this.width = width;
@@ -74,30 +81,21 @@ public class Window extends Group implements Signal.Listener<Key> {
 		
 		shadow = new ShadowBox();
 		shadow.am = 0.5f;
-		shadow.camera = PixelScene.uiCamera.visible ? 
-			PixelScene.uiCamera : Camera.main;
+		shadow.camera = PixelScene.uiCamera.visible ? PixelScene.uiCamera : Camera.main;
 		add( shadow );
 		
 		chrome.x = -chrome.marginLeft();
 		chrome.y = -chrome.marginTop();
-		chrome.size( 
-			width - chrome.x + chrome.marginRight(),
-			height - chrome.y + chrome.marginBottom() );
+		chrome.size( width - chrome.x + chrome.marginRight(), height - chrome.y + chrome.marginBottom() );
 		add( chrome );
 		
-		camera = new Camera( 0, 0, 
-			(int)chrome.width, 
-			(int)chrome.height, 
-			PixelScene.defaultZoom );
+		camera = new Camera( 0, 0, (int) chrome.width, (int) chrome.height, PixelScene.defaultZoom );
 		camera.x = (int)(Game.width - camera.width * camera.zoom) / 2;
 		camera.y = (int)(Game.height - camera.height * camera.zoom) / 2;
 		camera.scroll.set( chrome.x, chrome.y );
 		Camera.add( camera );
 		
-		shadow.boxRect( 
-			camera.x / camera.zoom, 
-			camera.y / camera.zoom, 
-			chrome.width(), chrome.height );
+		shadow.boxRect( camera.x / camera.zoom, camera.y / camera.zoom, chrome.width(), chrome.height );
 		
 		Keys.event.add( this );
 	}
@@ -106,9 +104,7 @@ public class Window extends Group implements Signal.Listener<Key> {
 		this.width = w;
 		this.height = h;
 		
-		chrome.size( 
-			width + chrome.marginHor(),
-			height + chrome.marginVer() );
+		chrome.size( width + chrome.marginHor(), height + chrome.marginVer() );
 		
 		camera.resize( (int)chrome.width, (int)chrome.height );
 		camera.x = (int)(Game.width - camera.screenWidth()) / 2;
@@ -141,6 +137,7 @@ public class Window extends Group implements Signal.Listener<Key> {
 			case Keys.MENU:
 				onMenuPressed();			
 				break;
+			// TODO: cases for navigation of UI with gamepad
 			}
 		}
 		
@@ -148,6 +145,8 @@ public class Window extends Group implements Signal.Listener<Key> {
 	}
 	
 	public void onBackPressed() {
+		Log.d(TAG, "ON BACK PRESSED");
+		// TODO : show game exit confirm?
 		hide();
 	}
 	

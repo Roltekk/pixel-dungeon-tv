@@ -197,7 +197,7 @@ public class TitleScene extends PixelScene {
 			image.y = align( y );
 			
 			label.x = align( x + (width - label.width()) / 2 );
-			label.y = align( image.y + image.height() +2 );
+			label.y = align( image.y + image.height() + 2 );
 		}
 		
 		@Override

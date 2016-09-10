@@ -210,7 +210,7 @@ public class PixelDungeon extends Game {
 	}
 	
 	/*
-	 * ---> Prefernces
+	 * ---> Preferences
 	 */
 	
 	public static void landscape( boolean value ) {
@@ -311,6 +311,15 @@ public class PixelDungeon extends Game {
 	
 	public static boolean soundFx() {
 		return Preferences.INSTANCE.getBoolean( Preferences.KEY_SOUND_FX, true );
+	}
+	
+	public static void debugInfo( boolean value ) {
+		Sample.INSTANCE.enable( value );
+		Preferences.INSTANCE.put( Preferences.KEY_DEBUG_INFO, value );
+	}
+	
+	public static boolean debugInfo() {
+		return Preferences.INSTANCE.getBoolean( Preferences.KEY_DEBUG_INFO, true );
 	}
 	
 	public static void brightness( boolean value ) {

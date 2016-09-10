@@ -49,7 +49,7 @@ public class Keys {
 
 	public static Signal<Key> event = new Signal<Key>( true );
 	
-	public static void processTouchEvents( ArrayList<KeyEvent> events ) {
+	public static void processKeyEvents( ArrayList<KeyEvent> events ) {
 		
 		int size = events.size();
 		for (int i=0; i < size; i++) {

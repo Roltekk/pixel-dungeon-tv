@@ -17,11 +17,13 @@
 
 package com.watabou.noosa;
 
+import android.util.Log;
+
 import com.watabou.input.Keys;
 import com.watabou.utils.Signal;
 
 public class Scene extends Group {
-	
+	private static final String TAG = "Scene";
 	private Signal.Listener<Keys.Key> keyListener;
 	
 	public void create() {
@@ -37,6 +39,7 @@ public class Scene extends Group {
 					case Keys.MENU:
 						onMenuPressed();
 						break;
+					// TODO: cases for actions in the scene with gamepad
 					}
 				}
 			}
@@ -68,6 +71,7 @@ public class Scene extends Group {
 	}
 	
 	protected void onBackPressed() {
+		Log.d(TAG, "ON BACK PRESSED");
 		Game.instance.finish();
 	}
 	

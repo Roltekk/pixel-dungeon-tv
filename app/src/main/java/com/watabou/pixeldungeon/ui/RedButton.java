@@ -24,6 +24,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Chrome;
+import com.watabou.pixeldungeon.ChromePlus;
 import com.watabou.pixeldungeon.scenes.PixelScene;
 
 public class RedButton extends Button {
@@ -31,7 +32,8 @@ public class RedButton extends Button {
 	protected NinePatch bg;
 	protected BitmapText text;
 	protected Image icon;
-			
+	protected NinePatch active_selection;
+
 	public RedButton( String label ) {
 		super();
 		
@@ -41,13 +43,17 @@ public class RedButton extends Button {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		bg = Chrome.get( Chrome.Type.BUTTON );
 		add( bg );
 		
+		active_selection = ChromePlus.get( ChromePlus.Type.BUTTON_HOVER );
+		active_selection.visible = false;
+		add( active_selection );
+		
 		text = PixelScene.createText( 9 );
 		add( text );
+		
+		super.createChildren();
 	}
 	
 	@Override
@@ -59,6 +65,10 @@ public class RedButton extends Button {
 		bg.y = y;
 		bg.size( width, height );
 		
+		active_selection.x = x;
+		active_selection.y = y;
+		active_selection.size( width, height );
+		
 		text.x = x + (int)(width - text.width()) / 2;
 		text.y = y + (int)(height - text.baseLine()) / 2;
 		
@@ -66,18 +76,18 @@ public class RedButton extends Button {
 			icon.x = x + text.x - icon.width() - 2;
 			icon.y = y + (height - icon.height()) / 2;
 		}
-	};
+	}
 	
 	@Override
 	protected void onTouchDown() {
 		bg.brightness( 1.2f );
 		Sample.INSTANCE.play( Assets.SND_CLICK );
-	};
+	}
 	
 	@Override
 	protected void onTouchUp() {
 		bg.resetColor();
-	};
+	}
 	
 	public void enable( boolean value ) {
 		active = value;

@@ -21,6 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLES20;
 
+import com.roltekk.util.Debug;
 import com.watabou.input.Touchscreen;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapText.Font;
@@ -132,6 +133,8 @@ public class PixelScene extends Scene {
 			font3x.baseLine = 17;
 			font3x.tracking = -2;
 		}
+		
+		Debug.DEBUG_INFO = PixelDungeon.debugInfo();
 	}
 	
 	@Override

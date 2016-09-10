@@ -17,6 +17,8 @@
 
 package com.watabou.noosa;
 
+import com.roltekk.util.DebugUI;
+import com.roltekk.util.HotAreaUI;
 import com.watabou.input.Touchscreen;
 import com.watabou.input.Touchscreen.Touch;
 import com.watabou.utils.Signal;
@@ -25,6 +27,7 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 	
 	// Its target can be toucharea itself
 	public Visual target;
+	public HotAreaUI debug_outline = DebugUI.get( DebugUI.UIType.HOTAREA );
 	
 	protected Touchscreen.Touch touch = null;
 	
@@ -38,8 +41,6 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 	public TouchArea( float x, float y, float width, float height ) {
 		super( x, y, width, height );
 		this.target = this;
-		
-		visible = false;
 		
 		Touchscreen.event.add( this );
 	}
@@ -63,10 +64,12 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 					this.touch = touch;
 				}
 				onTouchDown( touch );
+				// TODO: enable debug drawing if applicable
 				
 			} else {
 				
 				onTouchUp( touch );
+				// TODO: disable debug drawing if applicable
 				
 				if (this.touch == touch) {
 					this.touch = null;
@@ -89,17 +92,13 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 		}
 	}
 	
-	protected void onTouchDown( Touch touch ) {
-	}
+	protected void onTouchDown(Touch touch) { }
 	
-	protected void onTouchUp( Touch touch ) {
-	}
+	protected void onTouchUp(Touch touch) { }
 	
-	protected void onClick( Touch touch ) {
-	}
+	protected void onClick(Touch touch) { }
 	
-	protected void onDrag( Touch touch ) {
-	}
+	protected void onDrag(Touch touch) { }
 	
 	public void reset() {
 		touch = null;
@@ -109,5 +108,11 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 	public void destroy() {
 		Touchscreen.event.remove( this );
 		super.destroy();
+	}
+	
+	public void resizeDebugOutline() {
+		debug_outline.x = target.x;
+		debug_outline.y = target.y;
+		debug_outline.size( target.width, target.height );
 	}
 }

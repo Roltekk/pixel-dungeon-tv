@@ -17,6 +17,8 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -76,6 +78,7 @@ import com.watabou.pixeldungeon.windows.WndStory;
 import com.watabou.utils.Random;
 
 public class GameScene extends PixelScene {
+	private static final String TAG = "GameScene";
 	
 	private static final String TXT_WELCOME			= "Welcome to the level %d of Pixel Dungeon!";
 	private static final String TXT_WELCOME_BACK	= "Welcome back to the level %d of Pixel Dungeon!";
@@ -335,7 +338,7 @@ public class GameScene extends PixelScene {
 			Dungeon.saveAll();
 			Badges.saveGlobal();
 		} catch (IOException e) {
-			//
+			Log.e(TAG, e.getMessage());
 		}
 	}
 	
@@ -360,6 +363,7 @@ public class GameScene extends PixelScene {
 	
 	@Override
 	protected void onBackPressed() {
+		Log.d(TAG, "ON BACK PRESSED");
 		if (!cancel()) {
 			add( new WndGame() );
 		}

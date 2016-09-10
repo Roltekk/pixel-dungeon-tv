@@ -28,13 +28,14 @@ public class Assets {
 	public static final String LOCKED	= "locked_badge.png";
 	public static final String AMULET	= "amulet.png";
 	
-	public static final String CHROME	= "chrome.png";
-	public static final String ICONS	= "icons.png";
-	public static final String STATUS	= "status_pane.png";
-	public static final String HP_BAR	= "hp_bar.png";
-	public static final String XP_BAR	= "exp_bar.png";
-	public static final String TOOLBAR	= "toolbar.png";
-	public static final String SHADOW	= "shadow.png";
+	public static final String CHROME		= "chrome.png";
+	public static final String CHROME_PLUS	= "chrome_plus.png";
+	public static final String ICONS		= "icons.png";
+	public static final String STATUS		= "status_pane.png";
+	public static final String HP_BAR		= "hp_bar.png";
+	public static final String XP_BAR		= "exp_bar.png";
+	public static final String TOOLBAR		= "toolbar.png";
+	public static final String SHADOW		= "shadow.png";
 	
 	public static final String WARRIOR	= "warrior.png";
 	public static final String MAGE		= "mage.png";
@@ -45,9 +46,9 @@ public class Assets {
 	
 	public static final String SURFACE	= "surface.png";
 	
-	public static final String FIREBALL		= "fireball.png";
-	public static final String SPECKS		= "specks.png";
-	public static final String EFFECTS		= "effects.png";
+	public static final String FIREBALL = "fireball.png";
+	public static final String SPECKS 	= "specks.png";
+	public static final String EFFECTS 	= "effects.png";
 	
 	public static final String RAT		= "rat.png";
 	public static final String GNOLL	= "gnoll.png";

@@ -17,6 +17,7 @@
  */
 package com.watabou.pixeldungeon.windows;
 
+import com.roltekk.util.Debug;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
@@ -43,6 +44,8 @@ public class WndSettings extends Window {
 	private static final String TXT_BRIGHTNESS	= "Brightness";
 	
 	private static final String TXT_QUICKSLOT	= "Second quickslot";
+	
+	private static final String TXT_DEBUG_INFO	= "Debug Info";
 	
 	private static final int WIDTH		= 112;
 	private static final int BTN_HEIGHT	= 20;
@@ -134,6 +137,18 @@ public class WndSettings extends Window {
 		btnSound.checked( PixelDungeon.soundFx() );
 		add( btnSound );
 		
+		CheckBox btnDebugInfo = new CheckBox( TXT_DEBUG_INFO ) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				PixelDungeon.debugInfo( checked() );
+				Debug.DEBUG_INFO = checked();
+			}
+		};
+		btnDebugInfo.setRect( 0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT );
+		btnDebugInfo.checked( PixelDungeon.debugInfo() );
+		add( btnDebugInfo );
+		
 		if (inGame) {
 			
 			CheckBox btnBrightness = new CheckBox( TXT_BRIGHTNESS ) {
@@ -143,7 +158,7 @@ public class WndSettings extends Window {
 					PixelDungeon.brightness( checked() );
 				}
 			};
-			btnBrightness.setRect( 0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT );
+			btnBrightness.setRect( 0, btnDebugInfo.bottom() + GAP, WIDTH, BTN_HEIGHT );
 			btnBrightness.checked( PixelDungeon.brightness() );
 			add( btnBrightness );
 			
@@ -161,7 +176,7 @@ public class WndSettings extends Window {
 			resize( WIDTH, (int)btnQuickslot.bottom() );
 			
 		} else {
-			resize( WIDTH, (int)btnSound.bottom() );
+			resize( WIDTH, (int)btnDebugInfo.bottom() );
 		}
 	}
 	
