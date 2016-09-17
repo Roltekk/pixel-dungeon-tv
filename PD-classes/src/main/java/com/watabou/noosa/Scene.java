@@ -71,7 +71,6 @@ public class Scene extends Group {
 	}
 	
 	protected void onBackPressed() {
-		Log.d(TAG, "ON BACK PRESSED");
 		Game.instance.finish();
 	}
 	

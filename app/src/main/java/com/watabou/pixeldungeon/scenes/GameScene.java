@@ -371,7 +371,6 @@ public class GameScene extends PixelScene {
 	
 	@Override
 	protected void onBackPressed() {
-		Log.d(TAG, "ON BACK PRESSED");
 		if (!cancel()) {
 			add( new WndGame() );
 		}

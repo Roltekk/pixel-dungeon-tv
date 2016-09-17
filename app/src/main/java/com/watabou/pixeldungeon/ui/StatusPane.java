@@ -68,7 +68,7 @@ public class StatusPane extends Component {
 	@Override
 	protected void createChildren() {
 		
-		shield = new NinePatch( Assets.STATUS, 80, 0, 30   + 18, 0 );
+		shield = new NinePatch( Assets.STATUS, 80, 0, 30 + 18, 0 );
 		add( shield );
 		
 		TouchArea heroTouchArea = new TouchArea( 0, 1, 30, 30 ) {
