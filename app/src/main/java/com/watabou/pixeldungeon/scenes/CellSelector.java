@@ -17,11 +17,17 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
+import android.view.KeyEvent;
+
+import com.watabou.input.Keys;
 import com.watabou.input.Touchscreen.Touch;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.TouchArea;
+import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.DungeonTilemap;
 import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 
 public class CellSelector extends TouchArea {
@@ -51,6 +57,38 @@ public class CellSelector extends TouchArea {
 				(int)touch.current.x, 
 				(int)touch.current.y ) );
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(Keys.Key key) {
+		boolean handled = true;
+		int x = 0, y = 0;
+		switch (key.code) {
+			case KeyEvent.KEYCODE_DPAD_UP:
+				y = -1;
+				break;
+			case KeyEvent.KEYCODE_DPAD_DOWN:
+				y = 1;
+				break;
+			case KeyEvent.KEYCODE_DPAD_LEFT:
+				x = -1;
+				break;
+			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				x = 1;
+				break;
+			default:
+				handled = false;
+				break;
+		}
+
+		if (handled) {
+			Point point = DungeonTilemap.tileToPoint( Dungeon.hero.pos);
+			point.x += x;
+			point.y += y;
+			select(DungeonTilemap.pointToTile(point));
+		}
+
+		return handled;
 	}
 	
 	public void select( int cell ) {
