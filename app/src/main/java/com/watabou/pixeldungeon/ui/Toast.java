@@ -42,8 +42,6 @@ public class Toast extends Component {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		bg = Chrome.get( Chrome.Type.TOAST_TR );
 		add( bg );
 		
@@ -56,6 +54,8 @@ public class Toast extends Component {
 		
 		text = PixelScene.createText( 8 );
 		add( text );
+
+		super.createChildren();
 	}
 	
 	@Override

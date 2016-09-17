@@ -19,10 +19,12 @@ package com.watabou.pixeldungeon.scenes;
 
 import java.util.List;
 
+import com.roltekk.util.FPSText;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
@@ -40,6 +42,7 @@ import com.watabou.utils.Random;
 public class BadgesScene extends PixelScene {
 	
 	private static final String TXT_TITLE = "Your Badges";
+	protected NinePatch active_selection;
 	
 	@Override
 	public void create() {
@@ -95,6 +98,12 @@ public class BadgesScene extends PixelScene {
 		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
 		add( btnExit );
 		
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.x = Camera.main.width - fpsText.width();
+		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
+		add( fpsText );
+		
 		fadeIn();
 		
 		Badges.loadingListener = new Callback() {
@@ -138,13 +147,15 @@ public class BadgesScene extends PixelScene {
 
 			setSize( icon.width(), icon.height() );
 		}
-
+		
 		@Override
 		protected void layout() {
 			super.layout();
 
-			icon.x = align( x + (width - icon.width()) / 2 );
-			icon.y = align( y + (height - icon.height()) / 2 );
+			if (icon != null) {
+				icon.x = align( x + (width - icon.width()) / 2 );
+				icon.y = align( y + (height - icon.height()) / 2 );
+			}
 		}
 
 		@Override

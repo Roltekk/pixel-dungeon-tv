@@ -146,7 +146,6 @@ public class Window extends Group implements Signal.Listener<Key> {
 	
 	public void onBackPressed() {
 		Log.d(TAG, "ON BACK PRESSED");
-		// TODO : show game exit confirm?
 		hide();
 	}
 	

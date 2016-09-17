@@ -17,17 +17,32 @@
  */
 package com.roltekk.util;
 
-public class Debug {
-	public static boolean DEBUG_INFO        = false;
-	public static boolean DRAW_TOUCH_AREAS  = true;
-	public static boolean DRAW_TOUCH_COORDS = false;
-	public static boolean DRAW_FPS          = true;
+import com.watabou.noosa.BitmapTextMultiline;
+import com.watabou.noosa.Game;
 
-	private Debug() {}
+public class FPSText extends BitmapTextMultiline {
+	private static final float DELAY = 1.0f;
+	private float time;
 
-	public static void update() {
+	public FPSText( Font font ) {
+		super( "FPS\n999", font );
 	}
 	
-	public static void draw() {
+	@Override
+	public void update() {
+		super.update();
+		
+		if (( time -= Game.elapsed ) <= 0) {
+			this.text = "FPS\n" + String.valueOf( (int) ( 1.0f / Game.elapsed ) );
+			time = DELAY;
+			this.dirty = true;
+		}
+	}
+	
+	@Override
+	public void draw() {
+		if (Debug.DEBUG_INFO && Debug.DRAW_FPS) {
+			super.draw();
+		}
 	}
 }

@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon.scenes;
 
 import java.util.HashMap;
 
+import com.roltekk.util.FPSText;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -224,6 +225,12 @@ public class StartScene extends PixelScene {
 		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
 		add( btnExit );
 		
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.x = Camera.main.width - fpsText.width();
+		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
+		add( fpsText );
+		
 		curClass = null;
 		updateClass( HeroClass.values()[PixelDungeon.lastClass()] );
 		
@@ -331,7 +338,6 @@ public class StartScene extends PixelScene {
 		@Override
 		protected void createChildren() {
 			super.createChildren();
-			
 			secondary = createText( 6 );
 			add( secondary );
 		}
@@ -409,9 +415,6 @@ public class StartScene extends PixelScene {
 		
 		@Override
 		protected void createChildren() {
-			
-			super.createChildren();
-			
 			avatar = new Image( Assets.AVATARS );
 			add( avatar );
 			
@@ -420,6 +423,8 @@ public class StartScene extends PixelScene {
 			
 			emitter = new BitmaskEmitter( avatar );
 			add( emitter );
+			
+			super.createChildren();
 		}
 		
 		@Override
@@ -488,11 +493,9 @@ public class StartScene extends PixelScene {
 		
 		@Override
 		protected void createChildren() {
-			
-			super.createChildren();
-			
 			image = Icons.get( PixelDungeon.challenges() > 0 ? Icons.CHALLENGE_ON :Icons.CHALLENGE_OFF );
 			add( image );
+			super.createChildren();
 		}
 		
 		@Override

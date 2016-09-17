@@ -23,6 +23,7 @@ import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Button;
 import com.watabou.noosa.ui.Component;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
@@ -63,18 +64,8 @@ public class BadgesList extends ScrollPane {
 		
 		super.layout();
 	}
-	
-	@Override
-	public void onClick( float x, float y ) {
-		int size = items.size();
-		for (int i=0; i < size; i++) {
-			if (items.get( i ).onClick( x, y )) {
-				break;
-			}
-		}
-	}
 
-	private class ListItem extends Component {
+	private class ListItem extends Button {
 		
 		private static final float HEIGHT	= 20;
 		
@@ -98,6 +89,7 @@ public class BadgesList extends ScrollPane {
 			
 			label = PixelScene.createText( 6 );
 			add( label );
+			super.createChildren();
 		}
 		
 		@Override
@@ -107,16 +99,24 @@ public class BadgesList extends ScrollPane {
 			
 			label.x = icon.x + icon.width + 2;
 			label.y = PixelScene.align( y + (height - label.baseLine()) / 2 );
+			
+			super.layout();
 		}
 		
-		public boolean onClick( float x, float y ) {
-			if (inside( x, y )) {
-				Sample.INSTANCE.play( Assets.SND_CLICK, 0.7f, 0.7f, 1.2f );
-				Game.scene().add( new WndBadge( badge ) );
-				return true;
-			} else {
-				return false;
-			}
+		@Override
+		protected void onTouchDown() {
+			icon.brightness( 1.5f );
+			Sample.INSTANCE.play( Assets.SND_CLICK, 0.7f, 0.7f, 1.2f );
+		}
+		
+		@Override
+		protected void onTouchUp() {
+			icon.brightness( 1.0f );
+		}
+		
+		@Override
+		protected void onClick() {
+			Game.scene().add( new WndBadge( badge ) );
 		}
 	}
 }

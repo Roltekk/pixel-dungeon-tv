@@ -22,6 +22,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 
 import com.roltekk.util.Debug;
+import com.roltekk.util.FPSText;
 import com.watabou.input.Touchscreen;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapText.Font;
@@ -135,6 +136,8 @@ public class PixelScene extends Scene {
 		}
 		
 		Debug.DEBUG_INFO = PixelDungeon.debugInfo();
+		Debug.DRAW_TOUCH_AREAS = PixelDungeon.debugShowTouchAreas();
+		Debug.DRAW_FPS = PixelDungeon.debugShowFPS();
 	}
 	
 	@Override
@@ -231,6 +234,15 @@ public class PixelScene extends Scene {
 		chooseFont( size );
 		
 		BitmapTextMultiline result = new BitmapTextMultiline( text, font );
+		result.scale.set( scale );
+		
+		return result;
+	}
+	
+	public static FPSText createFPSText( float size ) {
+		chooseFont( size );
+		
+		FPSText result = new FPSText( font );
 		result.scale.set( scale );
 		
 		return result;

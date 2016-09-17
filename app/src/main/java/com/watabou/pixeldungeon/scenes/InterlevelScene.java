@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon.scenes;
 
 import java.io.FileNotFoundException;
 
+import com.roltekk.util.FPSText;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -103,6 +104,12 @@ public class InterlevelScene extends PixelScene {
 		message.x = (Camera.main.width - message.width()) / 2; 
 		message.y = (Camera.main.height - message.height()) / 2;
 		add( message );
+		
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.x = Camera.main.width - fpsText.width();
+		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
+		add( fpsText );
 		
 		phase = Phase.FADE_IN;
 		timeLeft = TIME_TO_FADE;

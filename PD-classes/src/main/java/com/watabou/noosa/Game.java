@@ -285,7 +285,6 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	
 	protected void draw() {
 		scene.draw();
-		if (Debug.DEBUG_INFO) { Debug.draw(); }
 	}
 	
 	protected void switchScene() {
@@ -315,7 +314,6 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 		}
 		
 		scene.update();
-		if (Debug.DEBUG_INFO) { Debug.update(); }
 
 		Camera.updateAll();
 	}

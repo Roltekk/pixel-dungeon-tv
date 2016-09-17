@@ -21,6 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLES20;
 
+import com.roltekk.util.FPSText;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -149,6 +150,12 @@ public class TitleScene extends PixelScene {
 		ExitButton btnExit = new ExitButton();
 		btnExit.setPos( w - btnExit.width(), 0 );
 		add( btnExit );
+
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.x = w - fpsText.width();
+		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
+		add( fpsText );
 		
 		fadeIn();
 	}
@@ -180,13 +187,13 @@ public class TitleScene extends PixelScene {
 		
 		@Override
 		protected void createChildren() {
-			super.createChildren();
-			
 			image = new Image( Assets.DASHBOARD );
 			add( image );
 			
 			label = createText( 9 );
 			add( label );
+			
+			super.createChildren();
 		}
 		
 		@Override

@@ -38,10 +38,9 @@ public class ExitButton extends Button {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		image = Icons.EXIT.get();
 		add( image );
+		super.createChildren();
 	}
 	
 	@Override

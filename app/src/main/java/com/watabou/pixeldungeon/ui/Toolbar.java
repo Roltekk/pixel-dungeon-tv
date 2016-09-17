@@ -107,9 +107,9 @@ public class Toolbar extends Component {
 			};
 			@Override
 			protected void createChildren() {
-				super.createChildren();
 				gold = new GoldIndicator();
 				add( gold );
+				super.createChildren();
 			};
 			@Override
 			protected void layout() {
@@ -245,18 +245,16 @@ public class Toolbar extends Component {
 		
 		@Override
 		protected void createChildren() {
-			super.createChildren();
-			
 			base = new Image( Assets.TOOLBAR );
 			add( base );
+			super.createChildren();
 		}
 		
 		@Override
 		protected void layout() {
-			super.layout();
-			
 			base.x = x;
 			base.y = y;
+			super.layout();
 		}
 		
 		@Override
@@ -300,16 +298,15 @@ public class Toolbar extends Component {
 		
 		@Override
 		protected void createChildren() {
-			super.createChildren();
-			
 			slot = new QuickSlot();
 			add( slot );
+			super.createChildren();
 		}
 		
 		@Override
 		protected void layout() {
-			super.layout();
 			slot.setRect( x + 1, y + 2, width - 2, height - 2 );
+			super.layout();
 		}
 		
 		@Override

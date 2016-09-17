@@ -17,6 +17,8 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
+import com.roltekk.util.FPSText;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.windows.WndStory;
 
@@ -41,6 +43,12 @@ public class IntroScene extends PixelScene {
 				Game.switchScene( InterlevelScene.class );
 			}
 		} );
+		
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.x = Camera.main.width - fpsText.width();
+		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
+		add( fpsText );
 		
 		fadeIn();
 	}

@@ -58,7 +58,6 @@ public class RedButton extends Button {
 	
 	@Override
 	protected void layout() {
-		
 		super.layout();
 		
 		bg.x = x;

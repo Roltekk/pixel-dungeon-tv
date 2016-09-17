@@ -45,13 +45,13 @@ public class DangerIndicator extends Tag {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		number = new BitmapText( PixelScene.font1x );
 		add( number );
 		
 		icon = Icons.SKULL.get();
 		add( icon );
+
+		super.createChildren();
 	}
 	
 	@Override

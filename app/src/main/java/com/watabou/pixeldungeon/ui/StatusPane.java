@@ -71,17 +71,21 @@ public class StatusPane extends Component {
 		shield = new NinePatch( Assets.STATUS, 80, 0, 30   + 18, 0 );
 		add( shield );
 		
-		add( new TouchArea( 0, 1, 30, 30 ) {
+		TouchArea heroTouchArea = new TouchArea( 0, 1, 30, 30 ) {
 			@Override
-			protected void onClick( Touch touch ) {
+			protected void onClick(Touch touch) {
 				Image sprite = Dungeon.hero.sprite;
 				if (!sprite.isVisible()) {
 					Camera.main.focusOn( sprite );
 				}
 				GameScene.show( new WndHero() );
-			};			
-		} );
-		
+			}
+		};
+
+		heroTouchArea.resizeDebugOutline();
+		add( heroTouchArea );
+		add( heroTouchArea.debug_outline );
+
 		btnMenu = new MenuButton();
 		add( btnMenu );
 		
@@ -254,10 +258,9 @@ public class StatusPane extends Component {
 		
 		@Override
 		protected void createChildren() {
-			super.createChildren();
-			
 			image = new Image( Assets.STATUS, 114, 3, 12, 11 );
 			add( image );
+			super.createChildren();
 		}
 		
 		@Override

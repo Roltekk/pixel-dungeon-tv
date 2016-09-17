@@ -31,7 +31,6 @@ public class WndBadge extends Window {
 	private static final int MARGIN = 4;
 	
 	public WndBadge( Badges.Badge badge ) {
-		
 		super();
 		
 		Image icon = BadgeBanner.image( badge.image );

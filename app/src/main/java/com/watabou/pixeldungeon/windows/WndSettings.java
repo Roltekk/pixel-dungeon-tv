@@ -17,8 +17,8 @@
  */
 package com.watabou.pixeldungeon.windows;
 
-import com.roltekk.util.Debug;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.PixelDungeon;
@@ -53,6 +53,7 @@ public class WndSettings extends Window {
 	
 	private RedButton btnZoomOut;
 	private RedButton btnZoomIn;
+	private RedButton btnDebugInfo;
 	
 	public WndSettings( boolean inGame ) {
 		super();
@@ -111,7 +112,6 @@ public class WndSettings extends Window {
 			btnImmersive.checked( PixelDungeon.immersed() );
 			btnImmersive.enable( android.os.Build.VERSION.SDK_INT >= 19 );
 			add( btnImmersive );
-			
 		}
 		
 		CheckBox btnMusic = new CheckBox( TXT_MUSIC ) {
@@ -136,18 +136,14 @@ public class WndSettings extends Window {
 		btnSound.setRect( 0, btnMusic.bottom() + GAP, WIDTH, BTN_HEIGHT );
 		btnSound.checked( PixelDungeon.soundFx() );
 		add( btnSound );
-		
-		CheckBox btnDebugInfo = new CheckBox( TXT_DEBUG_INFO ) {
+
+		btnDebugInfo = new RedButton( TXT_DEBUG_INFO ) {
 			@Override
 			protected void onClick() {
-				super.onClick();
-				PixelDungeon.debugInfo( checked() );
-				Debug.DEBUG_INFO = checked();
+				hide();
+				Game.scene().add( new WndDebug() );
 			}
 		};
-		btnDebugInfo.setRect( 0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT );
-		btnDebugInfo.checked( PixelDungeon.debugInfo() );
-		add( btnDebugInfo );
 		
 		if (inGame) {
 			
@@ -158,7 +154,7 @@ public class WndSettings extends Window {
 					PixelDungeon.brightness( checked() );
 				}
 			};
-			btnBrightness.setRect( 0, btnDebugInfo.bottom() + GAP, WIDTH, BTN_HEIGHT );
+			btnBrightness.setRect( 0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT );
 			btnBrightness.checked( PixelDungeon.brightness() );
 			add( btnBrightness );
 			
@@ -172,12 +168,15 @@ public class WndSettings extends Window {
 			btnQuickslot.setRect( 0, btnBrightness.bottom() + GAP, WIDTH, BTN_HEIGHT );
 			btnQuickslot.checked( Toolbar.secondQuickslot() );
 			add( btnQuickslot );
-			
-			resize( WIDTH, (int)btnQuickslot.bottom() );
-			
+
+			btnDebugInfo.setRect( 0, btnQuickslot.bottom() + GAP, WIDTH, BTN_HEIGHT );
 		} else {
-			resize( WIDTH, (int)btnDebugInfo.bottom() );
+			btnDebugInfo.setRect( 0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT );
 		}
+
+		add( btnDebugInfo );
+		
+		resize( WIDTH, (int) btnDebugInfo.bottom() );
 	}
 	
 	private void zoom( float value ) {
@@ -193,5 +192,4 @@ public class WndSettings extends Window {
 		btnZoomIn.enable( zoom < PixelScene.maxZoom );
 		btnZoomOut.enable( zoom > PixelScene.minZoom );
 	}
-
 }

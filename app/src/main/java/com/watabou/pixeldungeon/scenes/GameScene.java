@@ -22,6 +22,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.roltekk.util.FPSText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -290,6 +291,13 @@ public class GameScene extends PixelScene {
 		}
 		
 		Camera.main.target = hero;
+
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.camera = uiCamera;
+		fpsText.x = uiCamera.width - fpsText.width();
+		fpsText.y = ( uiCamera.height - fpsText.height() ) / 2;
+		add( fpsText );
 
 		if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
 			if (Dungeon.depth < Statistics.deepestFloor) {

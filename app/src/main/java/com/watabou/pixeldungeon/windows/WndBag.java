@@ -331,7 +331,6 @@ public class WndBag extends WndTabbed {
 		protected void createChildren() {	
 			bg = new ColorBlock( SLOT_SIZE, SLOT_SIZE, NORMAL );
 			add( bg );
-			
 			super.createChildren();
 		}
 		

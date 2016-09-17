@@ -17,6 +17,7 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
+import com.roltekk.util.FPSText;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -53,8 +54,6 @@ public class RankingsScene extends PixelScene {
 	
 	private static final float GAP	= 4;
 	
-	private Archs archs;
-	
 	@Override
 	public void create() {
 		
@@ -68,7 +67,7 @@ public class RankingsScene extends PixelScene {
 		int w = Camera.main.width;
 		int h = Camera.main.height;
 		
-		archs = new Archs();
+		Archs archs = new Archs();
 		archs.setSize( w, h );
 		add( archs );
 		
@@ -137,6 +136,12 @@ public class RankingsScene extends PixelScene {
 		ExitButton btnExit = new ExitButton();
 		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
 		add( btnExit );
+				
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.x = Camera.main.width - fpsText.width();
+		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
+		add( fpsText );
 		
 		fadeIn();
 	}
@@ -195,9 +200,6 @@ public class RankingsScene extends PixelScene {
 		
 		@Override
 		protected void createChildren() {
-			
-			super.createChildren();
-			
 			shield = new ItemSprite( ItemSpriteSheet.TOMB, null );
 			add( shield );
 			
@@ -209,6 +211,8 @@ public class RankingsScene extends PixelScene {
 			
 			classIcon = new Image();
 			add( classIcon );
+			
+			super.createChildren();
 		}
 		
 		@Override

@@ -35,10 +35,9 @@ public class ResumeButton extends Tag {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		icon = Icons.get( Icons.RESUME );
 		add( icon );
+		super.createChildren();
 	}
 	
 	@Override

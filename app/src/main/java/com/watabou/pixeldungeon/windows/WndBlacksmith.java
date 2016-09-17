@@ -133,8 +133,6 @@ public class WndBlacksmith extends Window {
 		
 		@Override
 		protected void createChildren() {
-			super.createChildren();
-			
 			bg = Chrome.get( Chrome.Type.BUTTON );
 			add( bg );
 			
@@ -154,6 +152,7 @@ public class WndBlacksmith extends Window {
 				}
 			};
 			add( slot );
+			super.createChildren();
 		}
 		
 		protected void onClick() {};

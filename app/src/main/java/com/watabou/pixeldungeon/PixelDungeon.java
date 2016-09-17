@@ -322,6 +322,24 @@ public class PixelDungeon extends Game {
 		return Preferences.INSTANCE.getBoolean( Preferences.KEY_DEBUG_INFO, true );
 	}
 	
+	public static void debugShowTouchAreas( boolean value ) {
+		Sample.INSTANCE.enable( value );
+		Preferences.INSTANCE.put( Preferences.KEY_DEBUG_SHOW_TOUCH_AREAS, value );
+	}
+	
+	public static boolean debugShowTouchAreas() {
+		return Preferences.INSTANCE.getBoolean( Preferences.KEY_DEBUG_SHOW_TOUCH_AREAS, true );
+	}
+	
+	public static void debugShowFPS( boolean value ) {
+		Sample.INSTANCE.enable( value );
+		Preferences.INSTANCE.put( Preferences.KEY_DEBUG_SHOW_FPS, value );
+	}
+	
+	public static boolean debugShowFPS() {
+		return Preferences.INSTANCE.getBoolean( Preferences.KEY_DEBUG_SHOW_FPS, true );
+	}
+	
 	public static void brightness( boolean value ) {
 		Preferences.INSTANCE.put( Preferences.KEY_BRIGHTNESS, value );
 		if (scene() instanceof GameScene) {

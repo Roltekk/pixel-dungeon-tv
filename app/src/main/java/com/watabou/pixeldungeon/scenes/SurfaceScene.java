@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon.scenes;
 
 import java.nio.FloatBuffer;
 
+import com.roltekk.util.FPSText;
 import com.watabou.gltextures.Gradient;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.glwrap.Matrix;
@@ -167,6 +168,12 @@ public class SurfaceScene extends PixelScene {
 		add( gameOver );
 		
 		Badges.validateHappyEnd();
+		
+		FPSText fpsText = PixelScene.createFPSText( 9 );
+		fpsText.measure();
+		fpsText.x = Camera.main.width - fpsText.width();
+		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
+		add( fpsText );
 		
 		fadeIn();
 	}

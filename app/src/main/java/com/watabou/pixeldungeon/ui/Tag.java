@@ -41,11 +41,9 @@ public class Tag extends Button {
 	
 	@Override
 	protected void createChildren() {
-		
-		super.createChildren();
-		
 		bg = Chrome.get( Chrome.Type.TAG );
 		add( bg );
+		super.createChildren();
 	}
 	
 	@Override

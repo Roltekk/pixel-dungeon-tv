@@ -64,12 +64,10 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 					this.touch = touch;
 				}
 				onTouchDown( touch );
-				// TODO: enable debug drawing if applicable
 				
 			} else {
 				
 				onTouchUp( touch );
-				// TODO: disable debug drawing if applicable
 				
 				if (this.touch == touch) {
 					this.touch = null;

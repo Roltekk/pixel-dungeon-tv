@@ -38,15 +38,14 @@ public class LootIndicator extends Tag {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		slot = new ItemSlot() {
 			protected void onClick() {
 				Dungeon.hero.handle( Dungeon.hero.pos );
-			};
+			}
 		};
 		slot.showParams( false );
 		add( slot );
+		super.createChildren();
 	}
 	
 	@Override

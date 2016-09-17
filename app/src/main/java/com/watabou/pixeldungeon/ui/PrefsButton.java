@@ -36,10 +36,9 @@ public class PrefsButton extends Button {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		image = Icons.PREFS.get();
 		add( image );
+		super.createChildren();
 	}
 	
 	@Override

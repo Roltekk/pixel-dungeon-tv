@@ -76,8 +76,6 @@ public class QuickSlot extends Button implements WndBag.Listener {
 	
 	@Override
 	protected void createChildren() {
-		super.createChildren();
-		
 		slot = new ItemSlot() {
 			@Override
 			protected void onClick() {
@@ -109,6 +107,7 @@ public class QuickSlot extends Button implements WndBag.Listener {
 		
 		crossM = new Image();
 		crossM.copy( crossB );
+		super.createChildren();
 	}
 	
 	@Override

@@ -165,10 +165,9 @@ public class WndTabbed extends Window {
 		
 		@Override
 		protected void createChildren() {
-			super.createChildren();
-			
 			btLabel = PixelScene.createText( 9 );
 			add( btLabel );
+			super.createChildren();
 		}
 		
 		@Override

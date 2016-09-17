@@ -74,9 +74,6 @@ public class ItemSlot extends Button {
 		
 	@Override
 	protected void createChildren() {
-		
-		super.createChildren();
-		
 		icon = new ItemSprite();
 		add( icon );
 		
@@ -88,6 +85,8 @@ public class ItemSlot extends Button {
 		
 		bottomRight = new BitmapText( PixelScene.font1x );
 		add( bottomRight );
+		
+		super.createChildren();
 	}
 	
 	@Override

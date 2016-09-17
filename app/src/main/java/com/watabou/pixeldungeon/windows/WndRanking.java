@@ -103,14 +103,10 @@ public class WndRanking extends WndTabbed {
 	}
 	
 	private void createControls() {
-		
-		String[] labels = 
-			{TXT_STATS, TXT_ITEMS, TXT_BADGES};
-		Group[] pages = 
-			{new StatsTab(), new ItemsTab(), new BadgesTab()};
+		String[] labels = {TXT_STATS, TXT_ITEMS, TXT_BADGES};
+		Group[] pages = {new StatsTab(), new ItemsTab(), new BadgesTab()};
 		
 		for (int i=0; i < pages.length; i++) {
-			
 			add( pages[i] );
 			
 			Tab tab = new RankingTab( labels[i], pages[i] );
@@ -122,7 +118,6 @@ public class WndRanking extends WndTabbed {
 	}
 
 	private class RankingTab extends LabeledTab {
-		
 		private Group page;
 		
 		public RankingTab( String label, Group page ) {
@@ -279,15 +274,13 @@ public class WndRanking extends WndTabbed {
 			count++;
 		}
 		
-		private Item getQuickslot( Object value ) {
-			if (value instanceof Item && Dungeon.hero.belongings.backpack.contains( (Item)value )) {
-					
-					return (Item)value;
-					
-			} else if (value instanceof Class){
+		private Item getQuickslot(Object value) {
+			if (value instanceof Item && Dungeon.hero.belongings.backpack.contains( (Item) value )) {
+				return (Item) value;
+			} else if (value instanceof Class) {
 				
 				@SuppressWarnings("unchecked")
-				Item item = Dungeon.hero.belongings.getItem( (Class<? extends Item>)value );
+				Item item = Dungeon.hero.belongings.getItem( (Class<? extends Item>) value );
 				if (item != null) {
 					return item;
 				}
@@ -321,7 +314,6 @@ public class WndRanking extends WndTabbed {
 		private ColorBlock bg;
 		
 		public ItemButton( Item item ) {
-			
 			super();
 
 			this.item = item;
@@ -338,7 +330,6 @@ public class WndRanking extends WndTabbed {
 		
 		@Override
 		protected void createChildren() {	
-			
 			bg = new ColorBlock( SIZE, SIZE, 0xFF4A4D44 );
 			add( bg );
 			
@@ -362,11 +353,12 @@ public class WndRanking extends WndTabbed {
 		protected void onTouchDown() {
 			bg.brightness( 1.5f );
 			Sample.INSTANCE.play( Assets.SND_CLICK, 0.7f, 0.7f, 1.2f );
-		};
+		}
 		
+		@Override
 		protected void onTouchUp() {
 			bg.brightness( 1.0f );
-		};
+		}
 		
 		@Override
 		protected void onClick() {
@@ -383,15 +375,13 @@ public class WndRanking extends WndTabbed {
 		
 		@Override
 		protected void createChildren() {	
-			super.createChildren();
-			
 			name = PixelScene.createText( "?", 7 );
 			add( name );
+			super.createChildren();
 		}
 		
 		@Override
 		protected void layout() {
-			
 			super.layout();
 			
 			name.x = slot.right() + 2;

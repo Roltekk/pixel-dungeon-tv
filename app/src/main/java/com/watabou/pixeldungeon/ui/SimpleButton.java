@@ -38,8 +38,8 @@ public class SimpleButton extends Component {
 	protected void createChildren() {
 		image = new Image();
 		add( image );
-		
-		add( new TouchArea( image ) {
+
+		TouchArea touchArea = new TouchArea( image ) {
 			@Override
 			protected void onTouchDown(Touch touch) {
 				image.brightness( 1.2f );
@@ -52,13 +52,22 @@ public class SimpleButton extends Component {
 			protected void onClick( Touch touch ) {
 				SimpleButton.this.onClick();
 			}
-		} );
+		};
+
+		touchArea.target.x = x;
+		touchArea.target.y = y;
+		touchArea.target.width = width;
+		touchArea.target.height = height;
+		touchArea.resizeDebugOutline();
+		add( touchArea );
+		add( touchArea.debug_outline );
 	}
 	
 	@Override
 	protected void layout() {
 		image.x = x;
 		image.y = y;
+		super.layout();
 	}
 	
 	protected void onClick() {}
