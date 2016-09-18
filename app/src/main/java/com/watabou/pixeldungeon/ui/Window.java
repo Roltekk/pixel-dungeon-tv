@@ -144,7 +144,7 @@ public class Window extends Group implements Signal.Listener<Key> {
 		Keys.event.cancel();
 	}
 	
-	public void onBackPressed() {
+	protected void onBackPressed() {
 		Log.d(TAG, "ON BACK PRESSED");
 		hide();
 	}

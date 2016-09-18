@@ -30,6 +30,7 @@ public class Assets {
 	
 	public static final String CHROME		= "chrome.png";
 	public static final String CHROME_PLUS	= "chrome_plus.png";
+	public static final String CELL_SELECT	= "cell_selected.png";
 	public static final String ICONS		= "icons.png";
 	public static final String STATUS		= "status_pane.png";
 	public static final String HP_BAR		= "hp_bar.png";

@@ -23,7 +23,6 @@ import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.TouchArea;
 
-
 public class Button extends Component {
 	private static final String TAG = "Button";
 	public static float longClick = 1f;

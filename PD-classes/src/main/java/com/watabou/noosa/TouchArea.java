@@ -31,30 +31,12 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 	public HotAreaUI debug_outline = DebugUI.get( DebugUI.UIType.HOTAREA );
 	
 	protected Touchscreen.Touch touch = null;
-	
-	private Signal.Listener<Keys.Key> keyListener = new Signal.Listener<Keys.Key>() {
-		@Override
-		public void onSignal(Keys.Key key) {
-			final boolean handled;
-
-			if (key.pressed) {
-				handled = onKeyDown(key);
-			} else {
-				handled = onKeyUp(key);
-			}
-
-			if (handled) {
-				Keys.event.cancel();
-			}
-		}
-	};
 
 	public TouchArea( Visual target ) {
 		super( 0, 0, 0, 0 );
 		this.target = target;
 		
 		Touchscreen.event.add( this );
-		Keys.event.add( keyListener );
 	}
 	
 	public TouchArea( float x, float y, float width, float height ) {
@@ -62,7 +44,6 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 		this.target = this;
 		
 		Touchscreen.event.add( this );
-		Keys.event.add( keyListener );
 	}
 
 	@Override
@@ -109,15 +90,7 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 			
 		}
 	}
-	
-	protected boolean onKeyDown(Keys.Key key) {
-		return false;
-	}
 
-	protected boolean onKeyUp(Keys.Key key) {
-		return false;
-	}
-	
 	protected void onTouchDown(Touch touch) { }
 	
 	protected void onTouchUp(Touch touch) { }
@@ -133,7 +106,6 @@ public class TouchArea extends Visual implements Signal.Listener<Touchscreen.Tou
 	@Override
 	public void destroy() {
 		Touchscreen.event.remove( this );
-		Keys.event.remove( keyListener );
 		super.destroy();
 	}
 	
