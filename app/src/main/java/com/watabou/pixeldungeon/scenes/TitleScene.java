@@ -36,6 +36,7 @@ import com.watabou.pixeldungeon.effects.Fireball;
 import com.watabou.pixeldungeon.ui.Archs;
 import com.watabou.pixeldungeon.ui.ExitButton;
 import com.watabou.pixeldungeon.ui.PrefsButton;
+import com.watabou.pixeldungeon.windows.WndSettings;
 
 public class TitleScene extends PixelScene {
 
@@ -43,6 +44,7 @@ public class TitleScene extends PixelScene {
 	private static final String TXT_HIGHSCORES	= "Rankings";
 	private static final String TXT_BADGES		= "Badges";
 	private static final String TXT_ABOUT		= "About";
+	private static final String TXT_SETTINGS	= "Settings";
 	
 	@Override
 	public void create() {
@@ -65,7 +67,7 @@ public class TitleScene extends PixelScene {
 		add( title );
 		
 		float height = title.height + 
-			(PixelDungeon.landscape() ? DashboardItem.SIZE : DashboardItem.SIZE * 2);
+			(PixelDungeon.landscape() ? DashboardItem.SIZE : DashboardItem.SIZE * 2.5f);
 		
 		title.x = (w - title.width()) / 2;
 		title.y = (h - height) / 2;
@@ -91,6 +93,7 @@ public class TitleScene extends PixelScene {
 		signs.y = title.y;
 		add( signs );
 		
+		// TODO: make these dashboard items DPAD navigable, similar to how CellSelector indicates highlighted selection
 		DashboardItem btnBadges = new DashboardItem( TXT_BADGES, 3 ) {
 			@Override
 			protected void onClick() {
@@ -123,17 +126,27 @@ public class TitleScene extends PixelScene {
 		};
 		add( btnHighscores );
 		
+		DashboardItem btnSettings = new DashboardItem( TXT_SETTINGS, 4 ) {
+			@Override
+			protected void onClick() {
+				parent.add( new WndSettings( false ) );
+			}
+		};
+		add( btnSettings );
+		
 		if (PixelDungeon.landscape()) {
 			float y = (h + height) / 2 - DashboardItem.SIZE;
-			btnHighscores	.setPos( w / 2 - btnHighscores.width(), y );
-			btnBadges		.setPos( w / 2, y );
+			btnBadges		.setPos( ( w - btnBadges.width() ) / 2, y ); // center button
+			btnHighscores	.setPos( btnBadges.left() - btnHighscores.width(), y );
 			btnPlay			.setPos( btnHighscores.left() - btnPlay.width(), y );
 			btnAbout		.setPos( btnBadges.right(), y );
+			btnSettings		.setPos( btnAbout.right(), y );
 		} else {
-			btnBadges.setPos( w / 2 - btnBadges.width(), (h + height) / 2 - DashboardItem.SIZE );
-			btnAbout.setPos( w / 2, (h + height) / 2 - DashboardItem.SIZE );
-			btnPlay.setPos( w / 2 - btnPlay.width(), btnAbout.top() - DashboardItem.SIZE );
-			btnHighscores.setPos( w / 2, btnPlay.top() );
+			btnBadges		.setPos( w / 2 - btnBadges.width(), (h + height) / 2 - (DashboardItem.SIZE * 1.5f) );
+			btnAbout		.setPos( w / 2, (h + height) / 2 - (DashboardItem.SIZE * 1.5f) );
+			btnPlay			.setPos( w / 2 - btnPlay.width(), btnAbout.top() - DashboardItem.SIZE );
+			btnHighscores	.setPos( w / 2, btnPlay.top() );
+			btnSettings		.setPos( ( w - btnSettings.width() ) / 2, btnAbout.bottom());
 		}
 		
 		BitmapText version = new BitmapText( "v " + Game.version, font1x );
@@ -143,13 +156,9 @@ public class TitleScene extends PixelScene {
 		version.y = h - version.height();
 		add( version );
 		
-		PrefsButton btnPrefs = new PrefsButton();
-		btnPrefs.setPos( 0, 0 );
-		add( btnPrefs );
-		
-		ExitButton btnExit = new ExitButton();
-		btnExit.setPos( w - btnExit.width(), 0 );
-		add( btnExit );
+//		ExitButton btnExit = new ExitButton();
+//		btnExit.setPos( w - btnExit.width(), 0 );
+//		add( btnExit );
 
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();

@@ -96,9 +96,9 @@ public class AboutScene extends PixelScene {
 		archs.setSize( Camera.main.width, Camera.main.height );
 		addToBack( archs );
 		
-		ExitButton btnExit = new ExitButton();
-		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-		add( btnExit );
+//		ExitButton btnExit = new ExitButton();
+//		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
+//		add( btnExit );
 		
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();

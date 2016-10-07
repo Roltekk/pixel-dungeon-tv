@@ -94,9 +94,9 @@ public class BadgesScene extends PixelScene {
 			}
 		}
 		
-		ExitButton btnExit = new ExitButton();
-		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-		add( btnExit );
+//		ExitButton btnExit = new ExitButton();
+//		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
+//		add( btnExit );
 		
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();

@@ -8,7 +8,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 74
-        versionName "1.9.1"
+        versionName "1.9.1-tv"
     }
 
     buildTypes {
