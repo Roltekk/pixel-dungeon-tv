@@ -85,8 +85,7 @@ public class CellSelector extends TouchArea {
 	}
 	
 	private boolean onKeyDown(Keys.Key key) {
-		// TODO: instead of instantly changing position, could move a highlight square (not beyond fog of war) and a A press confirms
-		// would mean that x y would have to accumulate until confirm press
+		// moves highlight square and a A/CENTER press confirm movement
 		handled = true;
 		switch (key.code) {
 			case Keys.DPAD_UP:
@@ -105,41 +104,19 @@ public class CellSelector extends TouchArea {
 				x++;
 				higlightVisible = true;
 				break;
+			case Keys.DPAD_CENTER:
 			case Keys.BUTTON_A:
+//				if (moving) {
 				Point point = DungeonTilemap.tileToPoint( Dungeon.hero.pos );
 				point.x += x;
 				point.y += y;
 				select( DungeonTilemap.pointToTile( point ) );
-				x = 0; y = 0;
+				x = y = 0;
 				higlightVisible = false;
-				// TODO:
-				break;
-//			case Keys.BUTTON_B:
-//				// NOTE: this would override the "Back"/"Cancel" action handled in Scene class
-//				break;
-			case Keys.BUTTON_X:
-				// TODO:
-				break;
-			case Keys.BUTTON_Y:
-				// TODO:
-				break;
-			case Keys.BUTTON_L1:
-				// TODO:
-				break;
-			case Keys.BUTTON_R1:
-				// TODO:
-				break;
-			case Keys.BUTTON_L2:
-				// TODO:
-				break;
-			case Keys.BUTTON_R2:
-				// TODO:
-				break;
-			case Keys.BUTTON_THUMBL:
-				// TODO:
-				break;
-			case Keys.BUTTON_THUMBR:
-				// TODO:
+//				} else {
+					// TODO: if x/y matches player position, maybe use to bring up "action" window menu for
+					// user stats, inventory, search, wait, examine, attack, use, etc.
+//				}
 				break;
 			default:
 				handled = false;

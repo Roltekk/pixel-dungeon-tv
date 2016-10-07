@@ -38,14 +38,6 @@ public class Keys {
 	public static final int DPAD_CENTER = KeyEvent.KEYCODE_DPAD_CENTER;
 	public static final int BUTTON_A = KeyEvent.KEYCODE_BUTTON_A;
 	public static final int BUTTON_B = KeyEvent.KEYCODE_BUTTON_B;
-	public static final int BUTTON_X = KeyEvent.KEYCODE_BUTTON_X;
-	public static final int BUTTON_Y = KeyEvent.KEYCODE_BUTTON_Y;
-	public static final int BUTTON_L1 = KeyEvent.KEYCODE_BUTTON_L1;
-	public static final int BUTTON_R1 = KeyEvent.KEYCODE_BUTTON_R1;
-	public static final int BUTTON_L2 = KeyEvent.KEYCODE_BUTTON_L2;
-	public static final int BUTTON_R2 = KeyEvent.KEYCODE_BUTTON_R2;
-	public static final int BUTTON_THUMBL = KeyEvent.KEYCODE_BUTTON_THUMBL;
-	public static final int BUTTON_THUMBR = KeyEvent.KEYCODE_BUTTON_THUMBR;
 
 	public static Signal<Key> event = new Signal<Key>( true );
 	

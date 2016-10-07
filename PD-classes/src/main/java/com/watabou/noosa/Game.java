@@ -191,13 +191,6 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 		return true;
 	}
 	
-	// TODO: use for analog controls
-	//	@Override
-	//	public boolean onGenericMotionEvent( MotionEvent event ) {
-	//		Log.d( TAG, "onGenericMotionEvent - MotionEvent = " + event.toString() );
-	//		return super.onGenericMotionEvent( event );
-	//	}
-	
 	@Override
 	public void onDrawFrame( GL10 gl ) {
 		
@@ -357,30 +350,6 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 				break;
 			case Keys.BUTTON_B:
 				Log.d( TAG, action + " Keys.BUTTON_B" );
-				break;
-			case Keys.BUTTON_X:
-				Log.d( TAG, action + " Keys.BUTTON_X" );
-				break;
-			case Keys.BUTTON_Y:
-				Log.d( TAG, action + " Keys.BUTTON_Y" );
-				break;
-			case Keys.BUTTON_L1:
-				Log.d( TAG, action + " Keys.BUTTON_L1" );
-				break;
-			case Keys.BUTTON_R1:
-				Log.d( TAG, action + " Keys.BUTTON_R1" );
-				break;
-			case Keys.BUTTON_L2:
-				Log.d( TAG, action + " Keys.BUTTON_L2" );
-				break;
-			case Keys.BUTTON_R2:
-				Log.d( TAG, action + " Keys.BUTTON_R2" );
-				break;
-			case Keys.BUTTON_THUMBL:
-				Log.d( TAG, action + " Keys.BUTTON_THUMBL" );
-				break;
-			case Keys.BUTTON_THUMBR:
-				Log.d( TAG, action + " Keys.BUTTON_THUMBR" );
 				break;
 		}
 	}
