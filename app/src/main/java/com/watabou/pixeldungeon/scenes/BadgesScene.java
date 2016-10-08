@@ -17,14 +17,16 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
-import java.util.List;
+import android.app.UiModeManager;
+import android.content.res.Configuration;
 
 import com.roltekk.util.FPSText;
+import com.watabou.input.Keys;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.NinePatch;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
@@ -32,21 +34,37 @@ import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.effects.BadgeBanner;
+import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.ui.Archs;
-import com.watabou.pixeldungeon.ui.ExitButton;
 import com.watabou.pixeldungeon.ui.Window;
 import com.watabou.pixeldungeon.windows.WndBadge;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+import com.watabou.utils.Signal;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BadgesScene extends PixelScene {
 	
 	private static final String TXT_TITLE = "Your Badges";
-	protected NinePatch active_selection;
+	
+	private Flare                     hoveringSelection;
+	private Signal.Listener<Keys.Key> keyListener;
+	private boolean                   keyHandled;
+	private ArrayList<BadgeButton> badgeButtons = new ArrayList<BadgeButton>();
+	
+	private float size;
+	private int   nCols, nRows;
+	private float left, top;
+	private int xIndex, yIndex;
+
+	public interface Listener {
+		void onSelect( );
+	}
 	
 	@Override
 	public void create() {
-		
 		super.create();
 		
 		Music.INSTANCE.play( Assets.THEME, true );
@@ -64,13 +82,13 @@ public class BadgesScene extends PixelScene {
 		int pw = (int)Math.min( w, (PixelDungeon.landscape() ? MIN_WIDTH_L : MIN_WIDTH_P) * 3 ) - 16;
 		int ph = (int)Math.min( h, (PixelDungeon.landscape() ? MIN_HEIGHT_L : MIN_HEIGHT_P) * 3 ) - 32;
 		
-		float size = (float)Math.sqrt( pw * ph / 27f );
-		int nCols = (int)Math.ceil( pw / size );
-		int nRows = (int)Math.ceil( ph / size );
+		size = (float)Math.sqrt( pw * ph / 27f );
+		nCols = (int)Math.ceil( pw / size );
+		nRows = (int)Math.ceil( ph / size );
 		size = Math.min( pw / nCols, ph / nRows );
 		
-		float left = (w - size * nCols) / 2;
-		float top = (h - size * nRows) / 2;
+		left = (w - size * nCols) / 2;
+		top = (h - size * nRows) / 2;
 		
 		BitmapText title = PixelScene.createText( TXT_TITLE, 9 );
 		title.hardlight( Window.TITLE_COLOR );
@@ -79,17 +97,36 @@ public class BadgesScene extends PixelScene {
 		title.y = align( (top - title.baseLine()) / 2 );
 		add( title );
 		
+		xIndex = yIndex = 0;
+		
+		hoveringSelection = new Flare( 6, 24 );
+		hoveringSelection.angularSpeed = 90;
+		hoveringSelection.color( 0xFFFFFF, true );
+		hoveringSelection.x = left + xIndex * size + size / 2;
+		hoveringSelection.y = top + yIndex * size + size / 2;
+		add( hoveringSelection );
+		
 		Badges.loadGlobal();
 		
 		List<Badges.Badge> badges = Badges.filtered( true );
-		for (int i=0; i < nRows; i++) {
-			for (int j=0; j < nCols; j++) {
+		hoveringSelection.visible = ( badges.size() > 0 );
+		// TODO: only use the hovering selecton with dpad navigation (hide for touch interface)
+//		UiModeManager uiModeManager = (UiModeManager) getSystemService(UI_MODE_SERVICE);
+//		if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+//			hoveringSelection.visible = true; also check hoveringSelection.visible = ( badges.size() > 0 );
+//		} else {
+//			hoveringSelection.visible = false;
+//		}
+
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
 				int index = i * nCols + j;
 				Badges.Badge b = index < badges.size() ? badges.get( index ) : null;
 				BadgeButton button = new BadgeButton( b );
 				button.setPos(
-					left + j * size + (size - button.width()) / 2,
-					top + i * size + (size - button.height()) / 2);
+						left + j * size + ( size - button.width() ) / 2,
+						top + i * size + ( size - button.height() ) / 2 );
+				badgeButtons.add( button );
 				add( button );
 			}
 		}
@@ -114,15 +151,84 @@ public class BadgesScene extends PixelScene {
 				}
 			}
 		};
+		
+		Keys.event.add( keyListener = new Signal.Listener<Keys.Key>() {
+			@Override
+			public void onSignal( Keys.Key key ) {
+				final boolean handled;
+				
+				if (key.pressed) {
+					handled = onKeyDown( key );
+				} else {
+					handled = onKeyUp( key );
+				}
+				
+				if (handled) {
+					Keys.event.cancel();
+				}
+			}
+		} );
 	}
 	
 	@Override
 	public void destroy() {
-		
+		Keys.event.remove( keyListener );
 		Badges.saveGlobal();
 		Badges.loadingListener = null;
 		
 		super.destroy();
+	}
+	
+	private boolean onKeyDown( Keys.Key key ) {
+		// moves highlight indicator and a A/CENTER press confirms selection
+		keyHandled = true;
+		int xNewIndex, yNewIndex;
+		xNewIndex = yNewIndex = -1;
+		switch (key.code) {
+			case Keys.DPAD_UP:
+				yNewIndex = ( yIndex < 1 ) ? nRows - 1 : yIndex - 1;
+				xNewIndex = xIndex;
+				break;
+			case Keys.DPAD_DOWN:
+				yNewIndex = ( yIndex > nRows - 2 ) ? 0 : yIndex + 1;
+				xNewIndex = xIndex;
+				break;
+			case Keys.DPAD_LEFT:
+				xNewIndex = ( xIndex < 1 ) ? nCols - 1 : xIndex - 1;
+				yNewIndex = yIndex;
+				break;
+			case Keys.DPAD_RIGHT:
+				xNewIndex = ( xIndex > nCols - 2 ) ? 0 : xIndex + 1;
+				yNewIndex = yIndex;
+				break;
+			case Keys.DPAD_CENTER:
+			case Keys.BUTTON_A:
+				int index = xIndex + nCols * yIndex;
+				badgeButtons.get(index).onClick();
+				break;
+			default:
+				keyHandled = false;
+				break;
+		}
+		
+		if (keyHandled) {
+			if (xNewIndex != -1 && yNewIndex != -1) {
+				int index = xNewIndex + nCols * yNewIndex;
+				if (badgeButtons.get( index ).badge != null) {
+					xIndex = xNewIndex;
+					yIndex = yNewIndex;
+					hoveringSelection.x = left + xIndex * size + size / 2;
+					hoveringSelection.y = top + yIndex * size + size / 2;
+				}
+			}
+		}
+		
+		return keyHandled;
+	}
+	
+	public boolean onKeyUp( Keys.Key key ) {
+		keyHandled = true;
+		return keyHandled;
 	}
 	
 	@Override
@@ -131,14 +237,12 @@ public class BadgesScene extends PixelScene {
 	}
 	
 	private static class BadgeButton extends Button {
-
 		private Badges.Badge badge;
-
-		private Image icon;
-
+		private Image        icon;
+		
 		public BadgeButton( Badges.Badge badge ) {
 			super();
-
+			
 			this.badge = badge;
 			active = (badge != null);
 
@@ -151,22 +255,22 @@ public class BadgesScene extends PixelScene {
 		@Override
 		protected void layout() {
 			super.layout();
-
+			
 			if (icon != null) {
 				icon.x = align( x + (width - icon.width()) / 2 );
 				icon.y = align( y + (height - icon.height()) / 2 );
 			}
 		}
-
+		
 		@Override
 		public void update() {
 			super.update();
-
+			
 			if (Random.Float() < Game.elapsed * 0.1) {
 				BadgeBanner.highlight( icon, badge.image );
 			}
 		}
-
+		
 		@Override
 		protected void onClick() {
 			Sample.INSTANCE.play( Assets.SND_CLICK, 0.7f, 0.7f, 1.2f );
