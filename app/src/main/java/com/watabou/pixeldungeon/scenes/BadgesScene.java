@@ -17,22 +17,19 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
-import android.app.UiModeManager;
-import android.content.res.Configuration;
-
 import com.roltekk.util.FPSText;
 import com.watabou.input.Keys;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.PixelDungeon;
+import com.watabou.pixeldungeon.Preferences;
 import com.watabou.pixeldungeon.effects.BadgeBanner;
 import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.ui.Archs;
@@ -59,10 +56,6 @@ public class BadgesScene extends PixelScene {
 	private float left, top;
 	private int xIndex, yIndex;
 
-	public interface Listener {
-		void onSelect( );
-	}
-	
 	@Override
 	public void create() {
 		super.create();
@@ -109,14 +102,7 @@ public class BadgesScene extends PixelScene {
 		Badges.loadGlobal();
 		
 		List<Badges.Badge> badges = Badges.filtered( true );
-		hoveringSelection.visible = ( badges.size() > 0 );
-		// TODO: only use the hovering selecton with dpad navigation (hide for touch interface)
-//		UiModeManager uiModeManager = (UiModeManager) getSystemService(UI_MODE_SERVICE);
-//		if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
-//			hoveringSelection.visible = true; also check hoveringSelection.visible = ( badges.size() > 0 );
-//		} else {
-//			hoveringSelection.visible = false;
-//		}
+		hoveringSelection.visible = Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false ) && (badges.size() > 0);
 
 		for (int i = 0; i < nRows; i++) {
 			for (int j = 0; j < nCols; j++) {
@@ -140,9 +126,7 @@ public class BadgesScene extends PixelScene {
 		fpsText.x = Camera.main.width - fpsText.width();
 		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
 		add( fpsText );
-		
-		fadeIn();
-		
+
 		Badges.loadingListener = new Callback() {
 			@Override
 			public void call() {
@@ -152,22 +136,26 @@ public class BadgesScene extends PixelScene {
 			}
 		};
 		
-		Keys.event.add( keyListener = new Signal.Listener<Keys.Key>() {
-			@Override
-			public void onSignal( Keys.Key key ) {
-				final boolean handled;
-				
-				if (key.pressed) {
-					handled = onKeyDown( key );
-				} else {
-					handled = onKeyUp( key );
+		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
+			Keys.event.add(keyListener = new Signal.Listener<Keys.Key>() {
+				@Override
+				public void onSignal(Keys.Key key) {
+					final boolean handled;
+					
+					if (key.pressed) {
+						handled = onKeyDown(key);
+					} else {
+						handled = onKeyUp(key);
+					}
+					
+					if (handled) {
+						Keys.event.cancel();
+					}
 				}
-				
-				if (handled) {
-					Keys.event.cancel();
-				}
-			}
-		} );
+			});
+		}
+		
+		fadeIn();
 	}
 	
 	@Override
@@ -203,8 +191,7 @@ public class BadgesScene extends PixelScene {
 				break;
 			case Keys.DPAD_CENTER:
 			case Keys.BUTTON_A:
-				int index = xIndex + nCols * yIndex;
-				badgeButtons.get(index).onClick();
+				// handled
 				break;
 			default:
 				keyHandled = false;
@@ -228,6 +215,23 @@ public class BadgesScene extends PixelScene {
 	
 	public boolean onKeyUp( Keys.Key key ) {
 		keyHandled = true;
+		switch (key.code) {
+			case Keys.DPAD_UP:
+			case Keys.DPAD_DOWN:
+			case Keys.DPAD_LEFT:
+			case Keys.DPAD_RIGHT:
+				// handled
+				break;
+			case Keys.DPAD_CENTER:
+			case Keys.BUTTON_A:
+				int index = xIndex + nCols * yIndex;
+				badgeButtons.get(index).onClick();
+				break;
+			default:
+				keyHandled = false;
+				break;
+		}
+		
 		return keyHandled;
 	}
 	
@@ -269,6 +273,16 @@ public class BadgesScene extends PixelScene {
 			if (Random.Float() < Game.elapsed * 0.1) {
 				BadgeBanner.highlight( icon, badge.image );
 			}
+		}
+		
+		@Override
+		protected void onTouchDown() {
+			icon.brightness( 1.5f );
+		}
+		
+		@Override
+		protected void onTouchUp() {
+			icon.resetColor();
 		}
 		
 		@Override

@@ -25,6 +25,7 @@ public enum Preferences {
 
 	INSTANCE;
 	
+	public static final String KEY_TELEVISION	= "television";
 	public static final String KEY_LANDSCAPE	= "landscape";
 	public static final String KEY_IMMERSIVE	= "immersive";
 	public static final String KEY_GOOGLE_PLAY	= "google_play";

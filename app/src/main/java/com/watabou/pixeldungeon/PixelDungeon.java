@@ -131,7 +131,9 @@ public class PixelDungeon extends Game {
 		updateImmersiveMode();
 
 		UiModeManager uiModeManager = (UiModeManager) getSystemService(UI_MODE_SERVICE);
-		if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+		Preferences.INSTANCE.put(Preferences.KEY_TELEVISION, (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION));
+
+		if (Preferences.INSTANCE.getBoolean(Preferences.KEY_TELEVISION, false)) {
 			landscape(true);
 		} else {
 			DisplayMetrics metrics = new DisplayMetrics();
