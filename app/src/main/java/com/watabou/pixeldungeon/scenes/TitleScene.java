@@ -38,7 +38,6 @@ import com.watabou.pixeldungeon.effects.Fireball;
 import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.ui.Archs;
 import com.watabou.pixeldungeon.ui.ExitButton;
-import com.watabou.pixeldungeon.ui.PrefsButton;
 import com.watabou.pixeldungeon.windows.WndOptions;
 import com.watabou.pixeldungeon.windows.WndSettings;
 import com.watabou.utils.Signal;
@@ -189,10 +188,6 @@ public class TitleScene extends PixelScene {
 		version.x = w - version.width();
 		version.y = h - version.height();
 		add( version );
-		
-//		ExitButton btnExit = new ExitButton();
-//		btnExit.setPos( w - btnExit.width(), 0 );
-//		add( btnExit );
 
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();
@@ -217,6 +212,10 @@ public class TitleScene extends PixelScene {
 					}
 				}
 			});
+		} else {
+			ExitButton btnExit = new ExitButton();
+			btnExit.setPos( w - btnExit.width(), 0 );
+			add( btnExit );
 		}
 		
 		fadeIn();

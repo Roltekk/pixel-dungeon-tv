@@ -18,6 +18,7 @@
 package com.watabou.pixeldungeon.scenes;
 
 import com.roltekk.util.FPSText;
+import com.watabou.input.Keys;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -26,6 +27,7 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.PixelDungeon;
+import com.watabou.pixeldungeon.Preferences;
 import com.watabou.pixeldungeon.Rankings;
 import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.sprites.ItemSprite;
@@ -36,6 +38,7 @@ import com.watabou.pixeldungeon.ui.Icons;
 import com.watabou.pixeldungeon.ui.Window;
 import com.watabou.pixeldungeon.windows.WndError;
 import com.watabou.pixeldungeon.windows.WndRanking;
+import com.watabou.utils.Signal;
 
 public class RankingsScene extends PixelScene {
 	
@@ -132,16 +135,36 @@ public class RankingsScene extends PixelScene {
 			add( title );
 			
 		}
-		
-//		ExitButton btnExit = new ExitButton();
-//		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-//		add( btnExit );
-				
+	
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();
 		fpsText.x = Camera.main.width - fpsText.width();
 		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
 		add( fpsText );
+		
+		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
+			// TODO: add navigation for past rounds list
+//			Keys.event.add(keyListener = new Signal.Listener<Keys.Key>() {
+//				@Override
+//				public void onSignal(Keys.Key key) {
+//					final boolean handled;
+//					
+//					if (key.pressed) {
+//						handled = onKeyDown(key);
+//					} else {
+//						handled = onKeyUp(key);
+//					}
+//					
+//					if (handled) {
+//						Keys.event.cancel();
+//					}
+//				}
+//			});
+		} else {
+			ExitButton btnExit = new ExitButton();
+			btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
+			add( btnExit );
+		}
 		
 		fadeIn();
 	}

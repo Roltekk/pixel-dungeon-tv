@@ -28,6 +28,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TouchArea;
 import com.watabou.pixeldungeon.PixelDungeon;
+import com.watabou.pixeldungeon.Preferences;
 import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.ui.Archs;
 import com.watabou.pixeldungeon.ui.ExitButton;
@@ -95,16 +96,20 @@ public class AboutScene extends PixelScene {
 		Archs archs = new Archs();
 		archs.setSize( Camera.main.width, Camera.main.height );
 		addToBack( archs );
-		
-//		ExitButton btnExit = new ExitButton();
-//		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-//		add( btnExit );
-		
+
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();
 		fpsText.x = Camera.main.width - fpsText.width();
 		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
 		add( fpsText );
+		
+		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
+			// TODO: maybe highlight link
+		} else {
+			ExitButton btnExit = new ExitButton();
+			btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
+			add( btnExit );
+		}
 		
 		fadeIn();
 	}

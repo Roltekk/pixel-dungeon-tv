@@ -35,6 +35,7 @@ import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.GamesInProgress;
 import com.watabou.pixeldungeon.PixelDungeon;
+import com.watabou.pixeldungeon.Preferences;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.effects.BannerSprites;
 import com.watabou.pixeldungeon.effects.Speck;
@@ -220,16 +221,36 @@ public class StartScene extends PixelScene {
 				pos += line.height(); 
 			}
 		}
-		
-//		ExitButton btnExit = new ExitButton();
-//		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-//		add( btnExit );
-		
+
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();
 		fpsText.x = Camera.main.width - fpsText.width();
 		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
 		add( fpsText );
+		
+		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
+			// TODO: add navigation for starting game items
+//			Keys.event.add(keyListener = new Signal.Listener<Keys.Key>() {
+//				@Override
+//				public void onSignal(Keys.Key key) {
+//					final boolean handled;
+//					
+//					if (key.pressed) {
+//						handled = onKeyDown(key);
+//					} else {
+//						handled = onKeyUp(key);
+//					}
+//					
+//					if (handled) {
+//						Keys.event.cancel();
+//					}
+//				}
+//			});
+		} else {
+			ExitButton btnExit = new ExitButton();
+			btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
+			add( btnExit );
+		}
 		
 		curClass = null;
 		updateClass( HeroClass.values()[PixelDungeon.lastClass()] );

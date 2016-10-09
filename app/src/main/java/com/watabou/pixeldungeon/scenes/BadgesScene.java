@@ -33,6 +33,7 @@ import com.watabou.pixeldungeon.Preferences;
 import com.watabou.pixeldungeon.effects.BadgeBanner;
 import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.ui.Archs;
+import com.watabou.pixeldungeon.ui.ExitButton;
 import com.watabou.pixeldungeon.ui.Window;
 import com.watabou.pixeldungeon.windows.WndBadge;
 import com.watabou.utils.Callback;
@@ -116,11 +117,7 @@ public class BadgesScene extends PixelScene {
 				add( button );
 			}
 		}
-		
-//		ExitButton btnExit = new ExitButton();
-//		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-//		add( btnExit );
-		
+
 		FPSText fpsText = PixelScene.createFPSText( 9 );
 		fpsText.measure();
 		fpsText.x = Camera.main.width - fpsText.width();
@@ -153,6 +150,10 @@ public class BadgesScene extends PixelScene {
 					}
 				}
 			});
+		} else {
+			ExitButton btnExit = new ExitButton();
+			btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
+			add( btnExit );
 		}
 		
 		fadeIn();

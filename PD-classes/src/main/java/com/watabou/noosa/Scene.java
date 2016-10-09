@@ -52,13 +52,9 @@ public class Scene extends Group {
 		super.destroy();
 	}
 	
-	public void pause() {
-		
-	}
+	public void pause() { }
 	
-	public void resume() {
-		
-	}
+	public void resume() { }
 	
 	@Override
 	public void update() {
@@ -70,12 +66,7 @@ public class Scene extends Group {
 		return Camera.main;
 	}
 	
-	protected void onBackPressed() {
-		Game.instance.finish();
-	}
+	protected void onBackPressed() { }
 	
-	protected void onMenuPressed() {
-		
-	}
-
+	protected void onMenuPressed() { }
 }
