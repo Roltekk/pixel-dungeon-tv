@@ -32,7 +32,7 @@ public class RedButton extends Button {
 	protected NinePatch bg;
 	protected BitmapText text;
 	protected Image icon;
-	protected NinePatch active_selection;
+	public NinePatch active_selection;
 
 	public RedButton( String label ) {
 		super();
@@ -80,12 +80,17 @@ public class RedButton extends Button {
 	@Override
 	protected void onTouchDown() {
 		bg.brightness( 1.2f );
-		Sample.INSTANCE.play( Assets.SND_CLICK );
 	}
 	
 	@Override
 	protected void onTouchUp() {
 		bg.resetColor();
+	}
+	
+	@Override
+	protected void onClick() {
+		Sample.INSTANCE.play( Assets.SND_CLICK, 1, 1, 0.8f );
+		super.onClick();
 	}
 	
 	public void enable( boolean value ) {

@@ -34,6 +34,27 @@ public class Button extends Component {
 	
 	protected boolean processed;
 	
+	protected Button left_button = null;
+	protected Button right_button = null;
+	protected Button up_button = null;
+	protected Button down_button = null;
+	
+	public void set_down_button( Button down_button ) { this.down_button = down_button; }
+	
+	public void set_left_button( Button left_button ) { this.left_button = left_button; }
+	
+	public void set_right_button( Button right_button ) { this.right_button = right_button; }
+	
+	public void set_up_button( Button up_button ) { this.up_button = up_button; }
+	
+	public Button get_up_button() { return up_button; }
+	
+	public Button get_right_button() { return right_button; }
+	
+	public Button get_left_button() { return left_button; }
+	
+	public Button get_down_button() { return down_button; }
+	
 	@Override
 	protected void createChildren() {
 		hotArea = new TouchArea( 0, 0, 0, 0 ) {
@@ -84,6 +105,10 @@ public class Button extends Component {
     protected void onTouchDown() {}
 	protected void onTouchUp() {}
 	protected void onClick() {}
+	
+	public void onKeyTouchDown() { onTouchDown(); }
+	public void onKeyTouchUp() { onTouchUp(); }
+	public void onKeyClick() { onClick(); }
 	
 	protected boolean onLongClick() {
 		return false;

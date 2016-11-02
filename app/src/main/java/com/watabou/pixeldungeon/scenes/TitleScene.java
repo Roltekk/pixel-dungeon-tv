@@ -228,7 +228,8 @@ public class TitleScene extends PixelScene {
 	}
 	
 	private boolean onKeyDown( Keys.Key key ) {
-		// moves highlight indicator and a A/CENTER press confirms selection
+		// - moves highlight indicator (left/right only)
+		// - A/CENTER press confirms selection
 		keyHandled = true;
 		int xNewIndex;
 		xNewIndex = -1;
@@ -241,7 +242,7 @@ public class TitleScene extends PixelScene {
 				break;
 			case Keys.DPAD_CENTER:
 			case Keys.BUTTON_A:
-				// handled
+				dashboardItems.get(xIndex).onTouchDown();
 				break;
 			default:
 				keyHandled = false;
@@ -269,6 +270,7 @@ public class TitleScene extends PixelScene {
 				break;
 			case Keys.DPAD_CENTER:
 			case Keys.BUTTON_A:
+				dashboardItems.get(xIndex).onTouchUp();
 				dashboardItems.get(xIndex).onClick();
 				break;
 			default:
@@ -301,6 +303,7 @@ public class TitleScene extends PixelScene {
 		add( fb );
 	}
 	
+	// same file scope UI class
 	private static class DashboardItem extends Button {
 		
 		public static final float SIZE	= 48;

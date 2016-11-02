@@ -17,16 +17,20 @@
  */
 package com.watabou.pixeldungeon.windows;
 
+import com.watabou.input.Keys;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.PixelDungeon;
+import com.watabou.pixeldungeon.Preferences;
 import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.pixeldungeon.ui.CheckBox;
 import com.watabou.pixeldungeon.ui.RedButton;
 import com.watabou.pixeldungeon.ui.Toolbar;
 import com.watabou.pixeldungeon.ui.Window;
+import com.watabou.utils.Signal;
 
 public class WndSettings extends Window {
 	
@@ -52,14 +56,26 @@ public class WndSettings extends Window {
 	private static final int GAP 		= 2;
 	
 	private RedButton btnZoomOut;
+	private RedButton btnDefaultZoom;
 	private RedButton btnZoomIn;
 	private RedButton btnDebugInfo;
+
+	private CheckBox btnScaleUp;
+	private CheckBox btnImmersive = null;
+	private CheckBox btnMusic;
+	private CheckBox btnSound;
+	private CheckBox btnBrightness;
+	private CheckBox btnQuickslot;
+
+//	private Flare                     hoveringSelection;
+	private Signal.Listener<Keys.Key> keyListener;
+	private boolean                   keyHandled;
+	private Button                    focusedButton;
 	
 	public WndSettings( boolean inGame ) {
 		super();
-		
-		CheckBox btnImmersive = null;
-		
+
+		// game state dependant UI
 		if (inGame) {
 			int w = BTN_HEIGHT;
 			
@@ -79,18 +95,19 @@ public class WndSettings extends Window {
 			};
 			add( btnZoomIn.setRect( WIDTH - w, 0, w, BTN_HEIGHT) );
 			
-			add( new RedButton( TXT_ZOOM_DEFAULT ) {
+			btnDefaultZoom = new RedButton( TXT_ZOOM_DEFAULT ) {
 				@Override
 				protected void onClick() {
 					zoom( PixelScene.defaultZoom );
 				}
-			}.setRect( btnZoomOut.right(), 0, WIDTH - btnZoomIn.width() - btnZoomOut.width(), BTN_HEIGHT ) );
-			
+			};
+			add( btnDefaultZoom.setRect( btnZoomOut.right(), 0, WIDTH - btnZoomIn.width() - btnZoomOut.width(), BTN_HEIGHT ));
+
 			updateEnabled();
 			
 		} else {
 			
-			CheckBox btnScaleUp = new CheckBox( TXT_SCALE_UP ) {
+			btnScaleUp = new CheckBox( TXT_SCALE_UP ) {
 				@Override
 				protected void onClick() {
 					super.onClick();
@@ -100,21 +117,23 @@ public class WndSettings extends Window {
 			btnScaleUp.setRect( 0, 0, WIDTH, BTN_HEIGHT );
 			btnScaleUp.checked( PixelDungeon.scaleUp() );
 			add( btnScaleUp );
-			
-			btnImmersive = new CheckBox( TXT_IMMERSIVE ) {
-				@Override
-				protected void onClick() {
-					super.onClick();
-					PixelDungeon.immerse( checked() );
-				}
-			};
-			btnImmersive.setRect( 0, btnScaleUp.bottom() + GAP, WIDTH, BTN_HEIGHT );
-			btnImmersive.checked( PixelDungeon.immersed() );
-			btnImmersive.enable( android.os.Build.VERSION.SDK_INT >= 19 );
-			add( btnImmersive );
+
+			if (android.os.Build.VERSION.SDK_INT >= 19 && !Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false ) ) {
+				btnImmersive = new CheckBox( TXT_IMMERSIVE ) {
+					@Override
+					protected void onClick() {
+						super.onClick();
+						PixelDungeon.immerse( checked() );
+					}
+				};
+				btnImmersive.setRect( 0, btnScaleUp.bottom() + GAP, WIDTH, BTN_HEIGHT );
+				btnImmersive.checked( PixelDungeon.immersed() );
+				add( btnImmersive );
+			}
 		}
 		
-		CheckBox btnMusic = new CheckBox( TXT_MUSIC ) {
+		// always present UI
+		btnMusic = new CheckBox( TXT_MUSIC ) {
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -125,7 +144,7 @@ public class WndSettings extends Window {
 		btnMusic.checked( PixelDungeon.music() );
 		add( btnMusic );
 		
-		CheckBox btnSound = new CheckBox( TXT_SOUND ) {
+		btnSound = new CheckBox( TXT_SOUND ) {
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -140,14 +159,16 @@ public class WndSettings extends Window {
 		btnDebugInfo = new RedButton( TXT_DEBUG_INFO ) {
 			@Override
 			protected void onClick() {
+				super.onClick();
 				hide();
 				Game.scene().add( new WndDebug() );
 			}
 		};
 		
+		// game state dependant UI
 		if (inGame) {
 			
-			CheckBox btnBrightness = new CheckBox( TXT_BRIGHTNESS ) {
+			btnBrightness = new CheckBox( TXT_BRIGHTNESS ) {
 				@Override
 				protected void onClick() {
 					super.onClick();
@@ -158,7 +179,7 @@ public class WndSettings extends Window {
 			btnBrightness.checked( PixelDungeon.brightness() );
 			add( btnBrightness );
 			
-			CheckBox btnQuickslot = new CheckBox( TXT_QUICKSLOT ) {
+			btnQuickslot = new CheckBox( TXT_QUICKSLOT ) {
 				@Override
 				protected void onClick() {
 					super.onClick();
@@ -177,10 +198,76 @@ public class WndSettings extends Window {
 		add( btnDebugInfo );
 		
 		resize( WIDTH, (int) btnDebugInfo.bottom() );
+		
+		// set button navigation associations
+		if (inGame) {
+			btnZoomOut.set_right_button( btnDefaultZoom );
+			btnDefaultZoom.set_left_button( btnZoomOut );
+			btnDefaultZoom.set_right_button( btnZoomIn );
+			btnZoomIn.set_left_button( btnDefaultZoom );
+			
+			btnZoomOut.set_down_button( btnMusic );
+			btnDefaultZoom.set_down_button( btnMusic );
+			btnZoomIn.set_down_button( btnMusic );
+			
+			btnMusic.set_up_button( btnDefaultZoom );
+			btnMusic.set_down_button( btnSound );
+			
+			btnSound.set_up_button( btnMusic );
+			btnSound.set_down_button( btnBrightness );
+			
+			btnBrightness.set_up_button( btnSound );
+			btnBrightness.set_down_button( btnQuickslot );
+			
+			btnQuickslot.set_up_button( btnBrightness );
+			btnQuickslot.set_down_button( btnDebugInfo );
+			
+			btnDebugInfo.set_up_button( btnQuickslot );
+		} else {
+			if (btnImmersive != null) {
+				btnScaleUp.set_down_button( btnImmersive );
+				
+				btnImmersive.set_up_button( btnScaleUp );
+				btnImmersive.set_down_button( btnMusic );
+				btnMusic.set_up_button( btnImmersive );
+				
+			} else {
+				btnScaleUp.set_down_button( btnMusic );
+				btnMusic.set_up_button( btnScaleUp );
+			}
+			
+			btnMusic.set_down_button( btnSound );
+			
+			btnSound.set_up_button( btnMusic );
+			btnSound.set_down_button( btnDebugInfo );
+			
+			btnDebugInfo.set_up_button( btnSound );
+		}
+		
+		focusedButton = btnDebugInfo;
+		((RedButton)focusedButton).active_selection.visible = true;
+
+		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
+			Keys.event.add(keyListener = new Signal.Listener<Keys.Key>() {
+				@Override
+				public void onSignal(Keys.Key key) {
+					final boolean handled;
+					
+					if (key.pressed) {
+						handled = onKeyDown(key);
+					} else {
+						handled = onKeyUp(key);
+					}
+					
+					if (handled) {
+						Keys.event.cancel();
+					}
+				}
+			});
+		} 
 	}
 	
 	private void zoom( float value ) {
-
 		Camera.main.zoom( value );
 		PixelDungeon.zoom( (int)(value - PixelScene.defaultZoom) );
 
@@ -191,5 +278,96 @@ public class WndSettings extends Window {
 		float zoom = Camera.main.zoom;
 		btnZoomIn.enable( zoom < PixelScene.maxZoom );
 		btnZoomOut.enable( zoom > PixelScene.minZoom );
+	}
+	
+	@Override
+	public void destroy() {
+		Keys.event.remove( keyListener );
+		super.destroy();
+	}
+
+	private boolean onKeyDown( Keys.Key key ) {
+		// - moves highlight indicator (dpad)
+		// - A/CENTER press confirms selection
+		keyHandled = true;
+		switch (key.code) {
+			case Keys.DPAD_UP:
+				if (focusedButton.get_up_button() != null) {
+					((RedButton)focusedButton).active_selection.visible = false;
+					focusedButton = focusedButton.get_up_button();
+					((RedButton)focusedButton).active_selection.visible = true;
+				}
+				break;
+			case Keys.DPAD_DOWN:
+				if (focusedButton.get_down_button() != null) {
+					((RedButton)focusedButton).active_selection.visible = false;
+					focusedButton = focusedButton.get_down_button();
+					((RedButton)focusedButton).active_selection.visible = true;
+				}
+				break;
+			case Keys.DPAD_LEFT:
+				if (focusedButton.get_left_button() != null) {
+					((RedButton)focusedButton).active_selection.visible = false;
+					focusedButton = focusedButton.get_left_button();
+					((RedButton)focusedButton).active_selection.visible = true;
+				}
+				break;
+			case Keys.DPAD_RIGHT:
+				if (focusedButton.get_right_button() != null) {
+					((RedButton)focusedButton).active_selection.visible = false;
+					focusedButton = focusedButton.get_right_button();
+					((RedButton)focusedButton).active_selection.visible = true;
+				}
+				break;
+			case Keys.DPAD_CENTER:
+			case Keys.BUTTON_A:
+				if (focusedButton.isActive()) {
+					focusedButton.onKeyTouchDown();
+				}
+				// handled
+				break;
+			default:
+				keyHandled = false;
+				break;
+		}
+		
+		// TODO: still use this to indicate focused button with active animation/effect
+		if (keyHandled) {
+//			if (xNewIndex != -1 && yNewIndex != -1) {
+//				int index = xNewIndex + nCols * yNewIndex;
+//				if (badgeButtons.get( index ).badge != null) {
+//					xIndex = xNewIndex;
+//					yIndex = yNewIndex;
+//					hoveringSelection.x = left + xIndex * size + size / 2;
+//					hoveringSelection.y = top + yIndex * size + size / 2;
+//				}
+//			}
+		}
+		
+		return keyHandled;
+	}
+	
+	public boolean onKeyUp( Keys.Key key ) {
+		keyHandled = true;
+		switch (key.code) {
+			case Keys.DPAD_UP:
+			case Keys.DPAD_DOWN:
+			case Keys.DPAD_LEFT:
+			case Keys.DPAD_RIGHT:
+				// handled
+				break;
+			case Keys.DPAD_CENTER:
+			case Keys.BUTTON_A:
+				if (focusedButton.isActive()) {
+					focusedButton.onKeyTouchUp();
+					focusedButton.onKeyClick();
+				}
+				break;
+			default:
+				keyHandled = false;
+				break;
+		}
+		
+		return keyHandled;
 	}
 }

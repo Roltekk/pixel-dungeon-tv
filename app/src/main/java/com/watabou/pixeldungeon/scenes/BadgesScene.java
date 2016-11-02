@@ -169,7 +169,8 @@ public class BadgesScene extends PixelScene {
 	}
 	
 	private boolean onKeyDown( Keys.Key key ) {
-		// moves highlight indicator and a A/CENTER press confirms selection
+		// - moves highlight indicator
+		// - A/CENTER press confirms selection
 		keyHandled = true;
 		int xNewIndex, yNewIndex;
 		xNewIndex = yNewIndex = -1;
@@ -192,7 +193,8 @@ public class BadgesScene extends PixelScene {
 				break;
 			case Keys.DPAD_CENTER:
 			case Keys.BUTTON_A:
-				// handled
+				int index = xIndex + nCols * yIndex;
+				badgeButtons.get(index).onTouchDown();
 				break;
 			default:
 				keyHandled = false;
@@ -226,6 +228,7 @@ public class BadgesScene extends PixelScene {
 			case Keys.DPAD_CENTER:
 			case Keys.BUTTON_A:
 				int index = xIndex + nCols * yIndex;
+				badgeButtons.get(index).onTouchUp();
 				badgeButtons.get(index).onClick();
 				break;
 			default:
@@ -241,6 +244,7 @@ public class BadgesScene extends PixelScene {
 		PixelDungeon.switchNoFade( TitleScene.class );
 	}
 	
+	// same file scope UI class
 	private static class BadgeButton extends Button {
 		private Badges.Badge badge;
 		private Image        icon;
