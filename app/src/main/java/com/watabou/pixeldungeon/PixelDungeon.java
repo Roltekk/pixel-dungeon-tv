@@ -316,7 +316,6 @@ public class PixelDungeon extends Game {
 	}
 	
 	public static void debugInfo( boolean value ) {
-		Sample.INSTANCE.enable( value );
 		Preferences.INSTANCE.put( Preferences.KEY_DEBUG_INFO, value );
 	}
 	
@@ -325,7 +324,6 @@ public class PixelDungeon extends Game {
 	}
 	
 	public static void debugShowTouchAreas( boolean value ) {
-		Sample.INSTANCE.enable( value );
 		Preferences.INSTANCE.put( Preferences.KEY_DEBUG_SHOW_TOUCH_AREAS, value );
 	}
 	
@@ -334,7 +332,6 @@ public class PixelDungeon extends Game {
 	}
 	
 	public static void debugShowFPS( boolean value ) {
-		Sample.INSTANCE.enable( value );
 		Preferences.INSTANCE.put( Preferences.KEY_DEBUG_SHOW_FPS, value );
 	}
 	

@@ -30,26 +30,19 @@ import com.watabou.pixeldungeon.ui.CheckBox;
 import com.watabou.pixeldungeon.ui.RedButton;
 import com.watabou.pixeldungeon.ui.Toolbar;
 import com.watabou.pixeldungeon.ui.Window;
-import com.watabou.utils.Signal;
 
 public class WndSettings extends Window {
 	
-	private static final String TXT_ZOOM_IN			= "+";
-	private static final String TXT_ZOOM_OUT		= "-";
-	private static final String TXT_ZOOM_DEFAULT	= "Default Zoom";
-
-	private static final String TXT_SCALE_UP		= "Scale up UI";
-	private static final String TXT_IMMERSIVE		= "Immersive mode";
-	
-	private static final String TXT_MUSIC	= "Music";
-	
-	private static final String TXT_SOUND	= "Sound FX";
-	
-	private static final String TXT_BRIGHTNESS	= "Brightness";
-	
-	private static final String TXT_QUICKSLOT	= "Second quickslot";
-	
-	private static final String TXT_DEBUG_INFO	= "Debug Info";
+	private static final String TXT_ZOOM_IN      = "+";
+	private static final String TXT_ZOOM_OUT     = "-";
+	private static final String TXT_ZOOM_DEFAULT = "Default Zoom";
+	private static final String TXT_SCALE_UP     = "Scale up UI";
+	private static final String TXT_IMMERSIVE    = "Immersive mode";
+	private static final String TXT_MUSIC        = "Music";
+	private static final String TXT_SOUND        = "Sound FX";
+	private static final String TXT_BRIGHTNESS   = "Brightness";
+	private static final String TXT_QUICKSLOT    = "Second quickslot";
+	private static final String TXT_DEBUG_INFO   = "Debug Info";
 	
 	private static final int WIDTH		= 112;
 	private static final int BTN_HEIGHT	= 20;
@@ -68,7 +61,6 @@ public class WndSettings extends Window {
 	private CheckBox btnQuickslot;
 
 //	private Flare                     hoveringSelection;
-	private Signal.Listener<Keys.Key> keyListener;
 	private boolean                   keyHandled;
 	private Button                    focusedButton;
 	
@@ -82,6 +74,7 @@ public class WndSettings extends Window {
 			btnZoomOut = new RedButton( TXT_ZOOM_OUT ) {
 				@Override
 				protected void onClick() {
+					super.onClick();
 					zoom( Camera.main.zoom - 1 );
 				}
 			};
@@ -90,6 +83,7 @@ public class WndSettings extends Window {
 			btnZoomIn = new RedButton( TXT_ZOOM_IN ) {
 				@Override
 				protected void onClick() {
+					super.onClick();
 					zoom( Camera.main.zoom + 1 );
 				}
 			};
@@ -98,6 +92,7 @@ public class WndSettings extends Window {
 			btnDefaultZoom = new RedButton( TXT_ZOOM_DEFAULT ) {
 				@Override
 				protected void onClick() {
+					super.onClick();
 					zoom( PixelScene.defaultZoom );
 				}
 			};
@@ -200,71 +195,56 @@ public class WndSettings extends Window {
 		resize( WIDTH, (int) btnDebugInfo.bottom() );
 		
 		// set button navigation associations
-		if (inGame) {
-			btnZoomOut.set_right_button( btnDefaultZoom );
-			btnDefaultZoom.set_left_button( btnZoomOut );
-			btnDefaultZoom.set_right_button( btnZoomIn );
-			btnZoomIn.set_left_button( btnDefaultZoom );
-			
-			btnZoomOut.set_down_button( btnMusic );
-			btnDefaultZoom.set_down_button( btnMusic );
-			btnZoomIn.set_down_button( btnMusic );
-			
-			btnMusic.set_up_button( btnDefaultZoom );
-			btnMusic.set_down_button( btnSound );
-			
-			btnSound.set_up_button( btnMusic );
-			btnSound.set_down_button( btnBrightness );
-			
-			btnBrightness.set_up_button( btnSound );
-			btnBrightness.set_down_button( btnQuickslot );
-			
-			btnQuickslot.set_up_button( btnBrightness );
-			btnQuickslot.set_down_button( btnDebugInfo );
-			
-			btnDebugInfo.set_up_button( btnQuickslot );
-		} else {
-			if (btnImmersive != null) {
-				btnScaleUp.set_down_button( btnImmersive );
+		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
+			if (inGame) {
+				btnZoomOut.set_right_button( btnDefaultZoom );
+				btnDefaultZoom.set_left_button( btnZoomOut );
+				btnDefaultZoom.set_right_button( btnZoomIn );
+				btnZoomIn.set_left_button( btnDefaultZoom );
 				
-				btnImmersive.set_up_button( btnScaleUp );
-				btnImmersive.set_down_button( btnMusic );
-				btnMusic.set_up_button( btnImmersive );
+				btnZoomOut.set_down_button( btnMusic );
+				btnDefaultZoom.set_down_button( btnMusic );
+				btnZoomIn.set_down_button( btnMusic );
 				
+				btnMusic.set_up_button( btnDefaultZoom );
+				btnMusic.set_down_button( btnSound );
+				
+				btnSound.set_up_button( btnMusic );
+				btnSound.set_down_button( btnBrightness );
+				
+				btnBrightness.set_up_button( btnSound );
+				btnBrightness.set_down_button( btnQuickslot );
+				
+				btnQuickslot.set_up_button( btnBrightness );
+				btnQuickslot.set_down_button( btnDebugInfo );
+				
+				btnDebugInfo.set_up_button( btnQuickslot );
 			} else {
-				btnScaleUp.set_down_button( btnMusic );
-				btnMusic.set_up_button( btnScaleUp );
+				if (btnImmersive != null) {
+					btnScaleUp.set_down_button( btnImmersive );
+					
+					btnImmersive.set_up_button( btnScaleUp );
+					btnImmersive.set_down_button( btnMusic );
+					btnMusic.set_up_button( btnImmersive );
+					
+				} else {
+					btnScaleUp.set_down_button( btnMusic );
+					btnMusic.set_up_button( btnScaleUp );
+				}
+				
+				btnMusic.set_down_button( btnSound );
+				
+				btnSound.set_up_button( btnMusic );
+				btnSound.set_down_button( btnDebugInfo );
+				
+				btnDebugInfo.set_up_button( btnSound );
 			}
 			
-			btnMusic.set_down_button( btnSound );
+			focusedButton = btnDebugInfo;
+			((RedButton)focusedButton).active_selection.visible = true;
 			
-			btnSound.set_up_button( btnMusic );
-			btnSound.set_down_button( btnDebugInfo );
-			
-			btnDebugInfo.set_up_button( btnSound );
+			Keys.event.add( this );
 		}
-		
-		focusedButton = btnDebugInfo;
-		((RedButton)focusedButton).active_selection.visible = true;
-
-		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
-			Keys.event.add(keyListener = new Signal.Listener<Keys.Key>() {
-				@Override
-				public void onSignal(Keys.Key key) {
-					final boolean handled;
-					
-					if (key.pressed) {
-						handled = onKeyDown(key);
-					} else {
-						handled = onKeyUp(key);
-					}
-					
-					if (handled) {
-						Keys.event.cancel();
-					}
-				}
-			});
-		} 
 	}
 	
 	private void zoom( float value ) {
@@ -282,8 +262,25 @@ public class WndSettings extends Window {
 	
 	@Override
 	public void destroy() {
-		Keys.event.remove( keyListener );
 		super.destroy();
+		Keys.event.remove( this );
+	}
+
+	@Override
+	public void onSignal( Keys.Key key ) {
+		final boolean handled;
+		
+		if (key.pressed) {
+			handled = onKeyDown( key );
+		} else {
+			handled = onKeyUp( key );
+		}
+		
+		if (handled) {
+			Keys.event.cancel();
+		} else {
+			super.onSignal( key );
+		}
 	}
 
 	private boolean onKeyDown( Keys.Key key ) {
