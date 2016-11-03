@@ -120,6 +120,7 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnPlay = new DashboardItem( TXT_PLAY, 0 ) {
 			@Override
 			protected void onClick() {
+				super.onClick();
 				PixelDungeon.switchNoFade( StartScene.class );
 			}
 		};
@@ -129,6 +130,7 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnHighscores = new DashboardItem( TXT_HIGHSCORES, 2 ) {
 			@Override
 			protected void onClick() {
+				super.onClick();
 				PixelDungeon.switchNoFade( RankingsScene.class );
 			}
 		};
@@ -138,6 +140,7 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnBadges = new DashboardItem( TXT_BADGES, 3 ) {
 			@Override
 			protected void onClick() {
+				super.onClick();
 				PixelDungeon.switchNoFade( BadgesScene.class );
 			}
 		};
@@ -147,6 +150,7 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnAbout = new DashboardItem( TXT_ABOUT, 1 ) {
 			@Override
 			protected void onClick() {
+				super.onClick();
 				PixelDungeon.switchNoFade( AboutScene.class );
 			}
 		};
@@ -156,6 +160,7 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnSettings = new DashboardItem( TXT_SETTINGS, 4 ) {
 			@Override
 			protected void onClick() {
+				super.onClick();
 				parent.add( new WndSettings( false ) );
 			}
 		};

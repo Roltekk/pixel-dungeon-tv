@@ -20,6 +20,7 @@ package com.watabou.pixeldungeon.scenes;
 import java.util.HashMap;
 
 import com.roltekk.util.FPSText;
+import com.watabou.input.Keys;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -38,6 +39,7 @@ import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.Preferences;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.effects.BannerSprites;
+import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.effects.Speck;
 import com.watabou.pixeldungeon.effects.BannerSprites.Type;
 import com.watabou.pixeldungeon.ui.Archs;
@@ -50,6 +52,7 @@ import com.watabou.pixeldungeon.windows.WndClass;
 import com.watabou.pixeldungeon.windows.WndMessage;
 import com.watabou.pixeldungeon.windows.WndOptions;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Signal;
 
 public class StartScene extends PixelScene {
 
@@ -69,8 +72,7 @@ public class StartScene extends PixelScene {
 	
 	private static final String TXT_UNLOCK	= "To unlock this character class, slay the 3rd boss with any other class";
 	
-	private static final String TXT_WIN_THE_GAME = 
-		"To unlock \"Challenges\", win the game with any character class.";
+	private static final String TXT_WIN_THE_GAME = "To unlock \"Challenges\", win the game with any character class.";
 	
 	private static final float WIDTH_P	= 116;
 	private static final float HEIGHT_P	= 220;
@@ -85,11 +87,16 @@ public class StartScene extends PixelScene {
 	
 	private GameButton btnLoad;
 	private GameButton btnNewGame;
+	private ChallengeButton btnChallenge;
 	
 	private boolean huntressUnlocked;
 	private Group unlock;
 	
 	public static HeroClass curClass;
+	
+	private Signal.Listener<Keys.Key> keyListener;
+	private boolean                   keyHandled;
+	private Button                    focusedButton;
 	
 	@Override
 	public void create() {
@@ -131,6 +138,7 @@ public class StartScene extends PixelScene {
 		btnNewGame = new GameButton( TXT_NEW ) {
 			@Override
 			protected void onClick() {
+				super.onClick();
 				if (GamesInProgress.check( curClass ) != null) {
 					StartScene.this.add( new WndOptions( TXT_REALLY, TXT_WARNING, TXT_YES, TXT_NO ) {
 						@Override
@@ -151,6 +159,7 @@ public class StartScene extends PixelScene {
 		btnLoad = new GameButton( TXT_LOAD ) {	
 			@Override
 			protected void onClick() {
+				super.onClick();
 				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
 				Game.switchScene( InterlevelScene.class );
 			}
@@ -171,34 +180,51 @@ public class StartScene extends PixelScene {
 			float shieldW = width / 4;
 			float shieldH = Math.min( centralHeight, shieldW );
 			top = title.y + title.height + (centralHeight - shieldH) / 2;
+			
+			btnChallenge = new ChallengeButton();
+			btnChallenge.setPos( 
+				w / 2 - btnChallenge.width() / 2,
+				top + shieldH - btnChallenge.height() / 2 );
+			add( btnChallenge );
+			btnChallenge.set_up_button( shields.get( classes[0] ) );
+			btnChallenge.set_down_button( btnNewGame );
+			
 			for (int i=0; i < classes.length; i++) {
 				ClassShield shield = shields.get( classes[i] );
 				shield.setRect( left + i * shieldW, top, shieldW, shieldH );
+				
+				if (i > 0) {
+					shield.set_left_button( shields.get( classes[i - 1] ) );
+				}
+				
+				if (i < classes.length - 1) {
+					shield.set_right_button( shields.get( classes[i + 1] ) );
+				}
+				
+				shield.set_down_button( btnChallenge );
 			}
-			
-			ChallengeButton challenge = new ChallengeButton();
-			challenge.setPos( 
-				w / 2 - challenge.width() / 2,
-				top + shieldH - challenge.height() / 2 );
-			add( challenge );
-			
 		} else {
 			float shieldW = width / 2;
 			float shieldH = Math.min( centralHeight / 2, shieldW * 1.2f );
 			top = title.y + title.height() + centralHeight / 2 - shieldH;
+			
+			btnChallenge = new ChallengeButton();
+			btnChallenge.setPos( 
+				w / 2 - btnChallenge.width() / 2,
+				top + shieldH - btnChallenge.height() / 2 );
+			add( btnChallenge );
+			btnChallenge.set_up_button( shields.get( classes[0] ) );
+			btnChallenge.set_down_button( btnNewGame );
+			
 			for (int i=0; i < classes.length; i++) {
 				ClassShield shield = shields.get( classes[i] );
 				shield.setRect( 
 					left + (i % 2) * shieldW, 
 					top + (i / 2) * shieldH, 
 					shieldW, shieldH );
+				
+				// TODO: set navigation?
 			}
-			
-			ChallengeButton challenge = new ChallengeButton();
-			challenge.setPos( 
-				w / 2 - challenge.width() / 2,
-				top + shieldH - challenge.height() / 2 );
-			add( challenge );
 		}
 		
 		unlock = new Group();
@@ -228,24 +254,33 @@ public class StartScene extends PixelScene {
 		fpsText.y = ( Camera.main.height - fpsText.height() ) / 2;
 		add( fpsText );
 		
+		// set button navigation associations
 		if (Preferences.INSTANCE.getBoolean( Preferences.KEY_TELEVISION, false )) {
-			// TODO: add navigation for starting game items
-//			Keys.event.add(keyListener = new Signal.Listener<Keys.Key>() {
-//				@Override
-//				public void onSignal(Keys.Key key) {
-//					final boolean handled;
-//					
-//					if (key.pressed) {
-//						handled = onKeyDown(key);
-//					} else {
-//						handled = onKeyUp(key);
-//					}
-//					
-//					if (handled) {
-//						Keys.event.cancel();
-//					}
-//				}
-//			});
+			btnLoad.set_right_button( btnNewGame );
+			btnNewGame.set_left_button( btnLoad );
+			
+			btnLoad.set_up_button( btnChallenge );
+			btnNewGame.set_up_button( btnChallenge );
+			
+			focusedButton = btnLoad;
+			((GameButton)focusedButton).active_selection.visible = true;
+			
+			Keys.event.add(keyListener = new Signal.Listener<Keys.Key>() {
+				@Override
+				public void onSignal(Keys.Key key) {
+					final boolean handled;
+					
+					if (key.pressed) {
+						handled = onKeyDown(key);
+					} else {
+						handled = onKeyUp(key);
+					}
+					
+					if (handled) {
+						Keys.event.cancel();
+					}
+				}
+			});
 		} else {
 			ExitButton btnExit = new ExitButton();
 			btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
@@ -269,11 +304,107 @@ public class StartScene extends PixelScene {
 	
 	@Override
 	public void destroy() {
-		
 		Badges.saveGlobal();
 		Badges.loadingListener = null;
-		
+		Keys.event.remove(keyListener);
 		super.destroy();
+	}
+
+	private boolean onKeyDown( Keys.Key key ) {
+		// - moves highlight indicator (dpad)
+		// - A/CENTER press confirms selection
+		keyHandled = true;
+		switch (key.code) {
+			case Keys.DPAD_UP:
+				if (focusedButton.get_up_button() != null) {
+					moveFocus(focusedButton.get_up_button());
+				}
+				break;
+			case Keys.DPAD_DOWN:
+				if (focusedButton.get_down_button() != null) {
+					moveFocus(focusedButton.get_down_button());
+				}
+				break;
+			case Keys.DPAD_LEFT:
+				if (focusedButton.get_left_button() != null) {
+					moveFocus(focusedButton.get_left_button());
+				}
+				break;
+			case Keys.DPAD_RIGHT:
+				if (focusedButton.get_right_button() != null) {
+					moveFocus(focusedButton.get_right_button());
+				}
+				break;
+			case Keys.DPAD_CENTER:
+			case Keys.BUTTON_A:
+				if (focusedButton.isActive()) {
+					focusedButton.onKeyTouchDown();
+				}
+				// handled
+				break;
+			default:
+				keyHandled = false;
+				break;
+		}
+		
+		// TODO: still use this to indicate focused button with active animation/effect
+		if (keyHandled) {
+//			if (xNewIndex != -1 && yNewIndex != -1) {
+//				int index = xNewIndex + nCols * yNewIndex;
+//				if (badgeButtons.get( index ).badge != null) {
+//					xIndex = xNewIndex;
+//					yIndex = yNewIndex;
+//					hoveringSelection.x = left + xIndex * size + size / 2;
+//					hoveringSelection.y = top + yIndex * size + size / 2;
+//				}
+//			}
+		}
+		
+		return keyHandled;
+	}
+	
+	public boolean onKeyUp( Keys.Key key ) {
+		keyHandled = true;
+		switch (key.code) {
+			case Keys.DPAD_UP:
+			case Keys.DPAD_DOWN:
+			case Keys.DPAD_LEFT:
+			case Keys.DPAD_RIGHT:
+				// handled
+				break;
+			case Keys.DPAD_CENTER:
+			case Keys.BUTTON_A:
+				if (focusedButton.isActive()) {
+					focusedButton.onKeyTouchUp();
+					focusedButton.onKeyClick();
+				}
+				break;
+			default:
+				keyHandled = false;
+				break;
+		}
+		
+		return keyHandled;
+	}
+
+	private void moveFocus( Button next ) {
+		if (focusedButton instanceof GameButton) {
+			((GameButton)focusedButton).active_selection.visible = false;
+		} else if (focusedButton instanceof ChallengeButton) {
+			((ChallengeButton)focusedButton).active_selection.visible = false;
+		} else if (focusedButton instanceof ClassShield) {
+			((ClassShield)focusedButton).active_selection.visible = false;
+		}
+		
+		focusedButton = next;
+		
+		if (focusedButton instanceof GameButton) {
+			((GameButton)focusedButton).active_selection.visible = true;
+		} else if (focusedButton instanceof ChallengeButton) {
+			((ChallengeButton)focusedButton).active_selection.visible = true;
+		} else if (focusedButton instanceof ClassShield) {
+			((ClassShield)focusedButton).active_selection.visible = true;
+		}
 	}
 	
 	private void updateClass( HeroClass cl ) {
@@ -291,6 +422,7 @@ public class StartScene extends PixelScene {
 		if (cl != HeroClass.HUNTRESS || huntressUnlocked) {
 		
 			unlock.visible = false;
+			btnChallenge.set_down_button( btnNewGame );
 			
 			GamesInProgress.Info info = GamesInProgress.check( curClass );
 			if (info != null) {
@@ -303,17 +435,18 @@ public class StartScene extends PixelScene {
 				
 				float w = (Camera.main.width - GAP) / 2 - buttonX;
 				
-				btnLoad.setRect(
-					buttonX, buttonY, w, BUTTON_HEIGHT );
-				btnNewGame.setRect(
-					btnLoad.right() + GAP, buttonY, w, BUTTON_HEIGHT );
+				btnLoad.setRect( buttonX, buttonY, w, BUTTON_HEIGHT );
+				btnNewGame.setRect( btnLoad.right() + GAP, buttonY, w, BUTTON_HEIGHT );
 				
+				btnNewGame.set_left_button( btnLoad );
 			} else {
 				btnLoad.visible = false;
 				
 				btnNewGame.visible = true;
 				btnNewGame.secondary( null, false );
 				btnNewGame.setRect( buttonX, buttonY, Camera.main.width - buttonX * 2, BUTTON_HEIGHT );
+				
+				btnNewGame.set_left_button( null );
 			}
 			
 		} else {
@@ -322,6 +455,7 @@ public class StartScene extends PixelScene {
 			btnLoad.visible = false;
 			btnNewGame.visible = false;
 			
+			btnChallenge.set_down_button( null );
 		}
 	}
 	
@@ -410,6 +544,8 @@ public class StartScene extends PixelScene {
 		private int normal;
 		private int highlighted;
 		
+		protected Flare active_selection;
+		
 		public ClassShield( HeroClass cl ) {
 			super();
 		
@@ -432,6 +568,13 @@ public class StartScene extends PixelScene {
 			
 			brightness = MIN_BRIGHTNESS;
 			updateBrightness();
+			
+			// create ui focus indicator
+			active_selection = new Flare( 6, 44 );
+			active_selection.angularSpeed = 30;
+			active_selection.color( 0xFFFFFF, true );
+			active_selection.visible = false;
+			addToBack( active_selection );
 		}
 		
 		@Override
@@ -458,6 +601,9 @@ public class StartScene extends PixelScene {
 			
 			name.x = align( x + (width - name.width()) / 2 );
 			name.y = avatar.y + avatar.height() + SCALE;
+			
+			active_selection.x = centerAvatarX();
+			active_selection.y = centerAvatarY();
 		}
 		
 		@Override
@@ -497,12 +643,22 @@ public class StartScene extends PixelScene {
 		private void updateBrightness() {
 			avatar.gm = avatar.bm = avatar.rm = avatar.am = brightness;
 		}
+		
+		public float centerAvatarX() {
+			return avatar.x + (avatar.width() / 2);
+		}
+		
+		public float centerAvatarY() {
+			return avatar.y + (avatar.height() / 2);
+		}
 	}
 	
 	private class ChallengeButton extends Button {
 		
 		private Image image;
-		
+
+		protected Flare active_selection;
+
 		public ChallengeButton() {
 			super();
 			
@@ -510,6 +666,13 @@ public class StartScene extends PixelScene {
 			height = image.height;
 			
 			image.am = Badges.isUnlocked( Badges.Badge.VICTORY ) ? 1.0f : 0.5f;
+
+			// create ui focus indicator
+			active_selection = new Flare( 6, 24 );
+			active_selection.angularSpeed = 30;
+			active_selection.color( 0xFFFFFF, true );
+			active_selection.visible = false;
+			addToBack( active_selection );
 		}
 		
 		@Override
@@ -521,15 +684,18 @@ public class StartScene extends PixelScene {
 		
 		@Override
 		protected void layout() {
-			
 			super.layout();
 			
 			image.x = align( x );
-			image.y = align( y  );
+			image.y = align( y );
+			
+			active_selection.x = centerImageX();
+			active_selection.y = centerImageY();
 		}
 		
 		@Override
 		protected void onClick() {
+			Sample.INSTANCE.play( Assets.SND_CLICK, 1, 1, 0.8f );
 			if (Badges.isUnlocked( Badges.Badge.VICTORY )) {
 				StartScene.this.add( new WndChallenges( PixelDungeon.challenges(), true ) {
 					public void onBackPressed() {
@@ -542,10 +708,24 @@ public class StartScene extends PixelScene {
 				StartScene.this.add( new WndMessage( TXT_WIN_THE_GAME ) );
 			}
 		}
-		
+
 		@Override
 		protected void onTouchDown() {
-			Sample.INSTANCE.play( Assets.SND_CLICK );
+			image.brightness( 1.5f );
+		}
+		
+		@Override
+		protected void onTouchUp() {
+			image.brightness( 1f );
+		}
+
+		
+		public float centerImageX() {
+			return image.x + image.width / 2;
+		}
+		
+		public float centerImageY() {
+			return image.y + image.height / 2;
 		}
 	}
 }
